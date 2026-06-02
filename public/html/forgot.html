@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forgot Password · Daily Habit Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/forgot.css" />
+  <script defer src="../js/forgot.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">
+      <i class="fas fa-chart-line"></i>
+      <span>Daily Habit Tracker</span>
+    </div>
+    <nav class="navbar">
+      <a href="/main">Home</a>
+      <a href="/signin">Sign In</a>
+    </nav>
+  </header>
+
+  <main class="forgot-page">
+    <section class="container forgot-grid">
+      <div class="forgot-copy">
+        <span class="eyebrow">Password reset</span>
+        <h1>Forgot your password?</h1>
+        <p>Enter your email and we’ll send a secure password reset link to your inbox.</p>
+      </div>
+
+      <section class="forgot-card">
+        <h2>Reset password</h2>
+        <p class="small-text">Enter the email you used to create your account, and we’ll email a reset link.</p>
+
+        <form id="forgotForm">
+          <div class="form-group">
+            <label for="reset-email">Email address</label>
+            <input id="reset-email" type="email" name="email" placeholder="you@example.com" required />
+          </div>
+
+          <button id="btnSendLink" class="btn-primary" type="submit">Send OTP</button>
+          <div id="forgot-message" class="message" style="margin-top: 16px; font-size: 14px;"></div>
+        </form>
+
+        <div class="small-text center-text" style="margin-top: 24px; text-align: center;">
+          Remembered it? <button id="btnBackToSignIn" class="link-button" type="button">Sign in</button>
+        </div>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

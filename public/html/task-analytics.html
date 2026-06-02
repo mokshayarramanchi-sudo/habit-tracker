@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Analytics - Daily Habit Tracker</title>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/sidebar.css">
+    <link rel="stylesheet" href="../css/tasks.css">
+    <link rel="stylesheet" href="../css/analytics.css">
+    <link rel="stylesheet" href="../css/task-analytics.css">
+    <script defer src="../js/home.js"></script>
+    <script defer src="../js/sidebar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="../js/task-analytics.js"></script>
+</head>
+
+<body>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fa-solid fa-infinity logo-icon"></i>
+                <span class="logo-text">Daily Habit Tracker</span>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li>
+                <a href="/home">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span class="link-name">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="/tasks">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span class="link-name">Task Manager</span>
+                </a>
+            </li>
+            <li>
+                <a href="/analytics">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span class="link-name">Analytics</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="/task-analytics">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span class="link-name">Task Analytics</span>
+                </a>
+            </li>
+            <li>
+                <a href="/diary">
+                    <i class="fa-solid fa-book-journal-whills"></i>
+                    <span class="link-name">Diary</span>
+                </a>
+            </li>
+            <li>
+                <a href="/future-plans">
+                    <i class="fa-solid fa-bullseye"></i>
+                    <span class="link-name">Future Plans</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span class="link-name">About App</span>
+                </a>
+            </li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="#" class="logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span class="link-name">Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header class="top-navbar">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Daily Habit Tracker</span>
+            </div>
+            <div class="navbar-actions">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <div class="notification">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="badge">3</span>
+                </div>
+                <a href="/profile" class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=User&background=6c5ce7&color=fff" alt="User Avatar"
+                        class="avatar">
+                </a>
+            </div>
+        </header>
+
+        <section class="task-management analytics-page-wrapper">
+            <div class="task-header">
+                <h1>Task Analytics</h1>
+                <p>Visualize the performance of your tasks and understand where your productivity is highest.</p>
+            </div>
+
+            <div class="task-filters" style="margin-bottom: 20px;">
+                <button class="filter-btn active" data-filter="all">All Tasks</button>
+                <button class="filter-btn" data-filter="do">Do Tasks</button>
+                <button class="filter-btn" data-filter="not-to-do">Not-To-Do</button>
+                <button class="filter-btn" data-filter="active">Active Only</button>
+            </div>
+
+            <div class="task-dropdown-container"
+                style="margin-bottom: 30px; display: flex; align-items: center; gap: 15px;">
+                <label for="taskNameFilter"
+                    style="font-weight: 500; color: var(--text-main); white-space: nowrap;">Inspect a specific
+                    task:</label>
+                <select id="taskNameFilter" class="form-input"
+                    style="width: 100%; max-width: 400px; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-main);">
+                    <option value="all">All Tasks</option>
+                </select>
+            </div>
+
+            <div id="analyticsCardsContainer">
+                <!-- Task analytics cards will be injected here by JS -->
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>

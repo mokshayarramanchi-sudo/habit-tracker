@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diary - Daily Habit Tracker</title>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/sidebar.css">
+    <link rel="stylesheet" href="../css/diary.css">
+    <script defer src="../js/home.js"></script>
+    <script defer src="../js/sidebar.js"></script>
+    <script defer src="../js/diary.js"></script>
+</head>
+
+<body>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fa-solid fa-infinity logo-icon"></i>
+                <span class="logo-text">Daily Habit Tracker</span>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li>
+                <a href="/home">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span class="link-name">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="/tasks">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span class="link-name">Task Manager</span>
+                </a>
+            </li>
+            <li>
+                <a href="/analytics">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span class="link-name">Analytics</span>
+                </a>
+            </li>
+            <li>
+                <a href="/task-analytics">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span class="link-name">Task Analytics</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="/diary">
+                    <i class="fa-solid fa-book-journal-whills"></i>
+                    <span class="link-name">Diary</span>
+                </a>
+            </li>
+            <li>
+                <a href="/future-plans">
+                    <i class="fa-solid fa-bullseye"></i>
+                    <span class="link-name">Future Plans</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span class="link-name">About App</span>
+                </a>
+            </li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="#" class="logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span class="link-name">Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header class="top-navbar">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Daily Habit Tracker</span>
+            </div>
+            <div class="navbar-actions">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <div class="notification">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="badge">3</span>
+                </div>
+                <a href="/profile" class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=User&background=6c5ce7&color=fff" alt="User Avatar"
+                        class="avatar">
+                </a>
+            </div>
+        </header>
+
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <h1>Diary & Reflection</h1>
+                <p class="current-date" id="header-date">Loading date...</p>
+            </div>
+
+            <!-- Top Summary Cards -->
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="summary-card-icon summary-icon-blue">
+                        <i class="fa-solid fa-book"></i>
+                    </div>
+                    <div>
+                        <h3>Total Entries</h3>
+                        <p id="total-entries">0</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-card-icon summary-icon-purple">
+                        <i class="fa-solid fa-fire"></i>
+                    </div>
+                    <div>
+                        <h3>Journal Streak</h3>
+                        <p id="journal-streak">0 Days</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-card-icon summary-icon-green">
+                        <i class="fa-solid fa-face-smile"></i>
+                    </div>
+                    <div>
+                        <h3>Average Mood</h3>
+                        <p id="average-mood">None</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid-2">
+                <!-- Left Column -->
+                <div class="diary-left-column">
+                    <!-- Today's Diary Entry -->
+                    <div class="glass-card diary-main-card">
+                        <div class="section-header" style="margin-bottom: 16px;">
+                            <h2>Today's Entry</h2>
+                        </div>
+                        <div class="diary-form">
+                            <input type="text" id="entry-title" class="form-input" style="margin-bottom: 16px;" placeholder="Give your day a title (Optional)">
+                            
+                            <div class="mood-selector">
+                                <span>How was your day?</span>
+                                <div class="mood-options" id="mood-options">
+                                    <button class="mood-btn" data-mood="great" title="Great">😄</button>
+                                    <button class="mood-btn" data-mood="good" title="Good">🙂</button>
+                                    <button class="mood-btn" data-mood="neutral" title="Neutral">😐</button>
+                                    <button class="mood-btn" data-mood="bad" title="Bad">😔</button>
+                                    <button class="mood-btn" data-mood="exhausted" title="Exhausted">😫</button>
+                                </div>
+                            </div>
+                            
+                            <textarea id="entry-text" class="form-textarea" placeholder="Write your thoughts here..." rows="8"></textarea>
+                            
+                            <div style="margin-top: 24px; text-align: right;">
+                                <button class="btn-primary" id="save-entry-btn"><i class="fa-solid fa-save"></i> Save Entry</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="diary-right-column">
+                    <!-- Recent Entries Section -->
+                    <div class="glass-card recent-entries-card">
+                        <div class="section-header" style="margin-bottom: 16px;">
+                            <h2>Recent Entries</h2>
+                        </div>
+                        <div class="recent-entries-list" id="recent-entries-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

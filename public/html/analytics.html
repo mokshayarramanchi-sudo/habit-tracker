@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Daily Habit Tracker</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/sidebar.css">
+    <link rel="stylesheet" href="../css/tasks.css">
+    <link rel="stylesheet" href="../css/analytics.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="../js/home.js"></script>
+    <script defer src="../js/sidebar.js"></script>
+    <script defer src="../js/analytics.js"></script>
+</head>
+
+<body>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fa-solid fa-infinity logo-icon"></i>
+                <span class="logo-text">Daily Habit Tracker</span>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li>
+                <a href="/home">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span class="link-name">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="/tasks">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span class="link-name">Task Manager</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="/analytics">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span class="link-name">Analytics</span>
+                </a>
+            </li>
+            <li>
+                <a href="/task-analytics">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span class="link-name">Task Analytics</span>
+                </a>
+            </li>
+            <li>
+                <a href="/diary">
+                    <i class="fa-solid fa-book-journal-whills"></i>
+                    <span class="link-name">Diary</span>
+                </a>
+            </li>
+            <li>
+                <a href="/future-plans">
+                    <i class="fa-solid fa-bullseye"></i>
+                    <span class="link-name">Future Plans</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span class="link-name">About App</span>
+                </a>
+            </li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="#" class="logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span class="link-name">Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header class="top-navbar">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Daily Habit Tracker</span>
+            </div>
+            <div class="navbar-actions">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <div class="notification">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="badge">3</span>
+                </div>
+                <a href="/profile" class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=User&background=6c5ce7&color=fff" alt="User Avatar" class="avatar">
+                </a>
+            </div>
+        </header>
+
+        <section class="task-management analytics-page-wrapper">
+            <!-- Analytics Header Section -->
+            <div class="task-header">
+                <h1>Analytics</h1>
+                <p>Track your productivity, monitor task completion, and analyze your progress over time.</p>
+            </div>
+
+            <!-- Calendar View -->
+            <div class="task-card calendar-card">
+                <div class="calendar-header-actions">
+                    <button id="prevMonth" class="calendar-nav-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                    <h2 id="calendarMonthYear" class="calendar-month-title">Month Year</h2>
+                    <button id="nextMonth" class="calendar-nav-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                
+                <div class="calendar-days-header">
+                    <div>Sun</div>
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div>Sat</div>
+                </div>
+
+                <div class="calendar-grid" id="analyticsCalendar">
+                    <!-- Generated by JS -->
+                </div>
+            </div>
+
+            <!-- Analytics Charts Section -->
+            <div class="charts-section">
+                <!-- Bar Graph Card -->
+                <div class="task-card chart-card">
+                    <div class="chart-text-header">
+                        <h2>Task Completion History</h2>
+                        <p>Completed daily tasks over the last 7 days.</p>
+                    </div>
+                    <div class="canvas-container">
+                        <canvas id="barGraphCanvas"></canvas>
+                    </div>
+                </div>
+
+                <!-- Line Graph Card -->
+                <div class="task-card chart-card">
+                    <div class="chart-text-header">
+                        <h2>Productivity Trend</h2>
+                        <p>Daily productivity percentage over the last 7 days.</p>
+                    </div>
+                    <div class="canvas-container">
+                        <canvas id="lineGraphCanvas"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Streak Insights Section -->
+            <div class="task-card insights-card">
+                <h2 class="card-title">Streak Insights</h2>
+                <div class="insights-grid">
+                    <div class="insight-item">
+                        <div class="insight-icon icon-orange"><i class="fa-solid fa-fire"></i></div>
+                        <div class="insight-text">
+                            <h4>Current Streak</h4>
+                            <p id="insightCurrentStreak">0 days</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon icon-purple"><i class="fa-solid fa-trophy"></i></div>
+                        <div class="insight-text">
+                            <h4>Best Streak</h4>
+                            <p id="insightBestStreak">0 days</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon icon-blue"><i class="fa-solid fa-chart-pie"></i></div>
+                        <div class="insight-text">
+                            <h4>Avg Productivity</h4>
+                            <p id="insightAvgProductivity">0%</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon icon-green"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                        <div class="insight-text">
+                            <h4>Highest Day</h4>
+                            <p id="insightHighestDay">-</p>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon icon-danger"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                        <div class="insight-text">
+                            <h4>Lowest Day</h4>
+                            <p id="insightLowestDay">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Calendar Day Modal (Hidden by default) -->
+        <div class="modal" id="dayDetailModal">
+            <div class="modal-content glass-card">
+                <div class="modal-header">
+                    <h2 id="modalDateTitle">Date</h2>
+                    <button class="close-modal"><i class="fa-solid fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Completed Daily Tasks:</strong> <span id="modalCompleted"></span></p>
+                    <p><strong>Pending Daily Tasks:</strong> <span id="modalPending"></span></p>
+                    <p><strong>Total Daily Tasks:</strong> <span id="modalTotal"></span></p>
+                    <p><strong>Completion Percentage:</strong> <span id="modalPercentage"></span></p>
+                    <p><strong>Streak Contribution:</strong> <span id="modalStreak"></span></p>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

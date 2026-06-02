@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Habit Tracker</title>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/sidebar.css">
+</head>
+
+<body>
+    <!-- Hover Expandable Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fa-solid fa-infinity logo-icon"></i>
+                <span class="logo-text">Daily Habit Tracker</span>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li class="active">
+                <a href="/home">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span class="link-name">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="/tasks">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span class="link-name">Task Manager</span>
+                </a>
+            </li>
+            <li>
+                <a href="/analytics">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span class="link-name">Analytics</span>
+                </a>
+            </li>
+            <li>
+                <a href="/task-analytics">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span class="link-name">Task Analytics</span>
+                </a>
+            </li>
+            <li>
+                <a href="/diary">
+                    <i class="fa-solid fa-book-journal-whills"></i>
+                    <span class="link-name">Diary</span>
+                </a>
+            </li>
+            <li>
+                <a href="/future-plans">
+                    <i class="fa-solid fa-bullseye"></i>
+                    <span class="link-name">Future Plans</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span class="link-name">About App</span>
+                </a>
+            </li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="#" class="logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span class="link-name">Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- Top Navbar -->
+        <header class="top-navbar">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Daily Habit Tracker</span>
+            </div>
+            <div class="navbar-actions">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <div class="notification">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="badge">3</span>
+                </div>
+                <a href="/profile" class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=User&background=6c5ce7&color=fff" alt="User Avatar"
+                        class="avatar">
+                </a>
+            </div>
+        </header>
+
+        <!-- Dashboard Section -->
+        <div class="dashboard-container" id="dashboard">
+            <div class="dashboard-header">
+                <h1>Today's Progress</h1>
+                <p class="current-date" id="currentDate"></p>
+            </div>
+
+            <section class="main-progress-banner glass-card">
+                <div class="progress-panel progress-left">
+                    <span class="panel-label">Total completed tasks today</span>
+                    <h2 id="banner-tasks-completed">0 <span class="divider">/</span> 0</h2>
+                    <p class="panel-subtext">Tasks completed out of total tasks</p>
+                </div>
+
+                <div class="progress-panel progress-center">
+                    <div class="circular-progress">
+                        <svg viewBox="0 0 120 120" class="progress-ring">
+                            <circle class="progress-ring-bg" cx="60" cy="60" r="52" />
+                            <circle class="progress-ring-circle" cx="60" cy="60" r="52" />
+                        </svg>
+                        <div class="progress-value">
+                            <span id="banner-completion-percentage">0%</span>
+                        </div>
+                    </div>
+                    <p class="panel-label">Visual completion percentage</p>
+                </div>
+
+                <div class="progress-panel progress-right">
+                    <span class="panel-label">Current Streak (days)</span>
+                    <h2 id="banner-streak-count">0</h2>
+                    <p class="panel-subtext">Best Streak: <strong id="banner-best-streak">0</strong> days</p>
+                </div>
+            </section>
+
+            <section class="summary-cards">
+                <article class="summary-card glass-card">
+                    <div class="summary-card-icon summary-icon-blue">
+                        <i class="fa-solid fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <h3>Completed Today</h3>
+                        <p id="summary-completed">0 tasks</p>
+                    </div>
+                </article>
+                <article class="summary-card glass-card">
+                    <div class="summary-card-icon summary-icon-green">
+                        <i class="fa-solid fa-hourglass-half"></i>
+                    </div>
+                    <div>
+                        <h3>Pending Tasks</h3>
+                        <p id="summary-pending">0 tasks</p>
+                    </div>
+                </article>
+                <article class="summary-card glass-card">
+                    <div class="summary-card-icon summary-icon-purple">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+                    <div>
+                        <h3>On Track</h3>
+                        <p id="summary-percentage">0% goal</p>
+                    </div>
+                </article>
+                <article class="summary-card glass-card">
+                    <div class="summary-card-icon summary-icon-orange">
+                        <i class="fa-solid fa-fire-flame-curved"></i>
+                    </div>
+                    <div>
+                        <h3>Streak Days</h3>
+                        <p id="summary-streak">0 days</p>
+                    </div>
+                </article>
+            </section>
+
+
+            <!-- Habit Overview Section -->
+            <section class="habit-overview-section" id="habit-overview">
+                <!-- Do Tasks -->
+                <div class="habit-category">
+                    <div class="category-header">
+                        <div class="header-title">
+                            <i class="fa-solid fa-circle-check text-success"></i>
+                            <h2>Do Tasks</h2>
+                            <span class="count-badge do-badge" id="doTasksCount">0</span>
+                        </div>
+                    </div>
+                    <div class="habit-grid" id="doTasksGrid">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+
+                <!-- Habits to Avoid -->
+                <div class="habit-category">
+                    <div class="category-header">
+                        <div class="header-title">
+                            <i class="fa-solid fa-circle-xmark text-danger"></i>
+                            <h2>Habits to Avoid</h2>
+                            <span class="count-badge avoid-badge" id="avoidTasksCount">0</span>
+                        </div>
+                    </div>
+                    <div class="habit-grid" id="avoidTasksGrid">
+                         <!-- Filled by JS -->
+                    </div>
+                </div>
+
+                <!-- Weekly Goals -->
+                <div class="habit-category">
+                    <div class="category-header">
+                        <div class="header-title">
+                            <i class="fa-solid fa-calendar-week text-primary"></i>
+                            <h2>Weekly Goals</h2>
+                            <span class="count-badge goal-badge" id="weeklyGoalsCount">0</span>
+                        </div>
+                    </div>
+                    <div class="habit-grid" id="weeklyGoalsGrid">
+                         <!-- Filled by JS -->
+                    </div>
+                </div>
+
+                <!-- Monthly Goals -->
+                <div class="habit-category">
+                    <div class="category-header">
+                        <div class="header-title">
+                            <i class="fa-solid fa-calendar-days text-info" style="color: var(--secondary);"></i>
+                            <h2>Monthly Goals</h2>
+                            <span class="count-badge goal-badge" id="monthlyGoalsCount">0</span>
+                        </div>
+                    </div>
+                    <div class="habit-grid" id="monthlyGoalsGrid">
+                         <!-- Filled by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <div class="dashboard-actions" style="margin-top: 2rem; display: flex; justify-content: flex-end; width: 100%;">
+                <button class="btn-primary save-progress-btn" id="saveProgressBtn" style="padding: 14px 32px; font-size: 1.1rem; border-radius: 30px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Save Today's Progress
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script defer src="../js/sidebar.js"></script>
+    <script src="../js/home.js"></script>
+</body>
+
+</html>

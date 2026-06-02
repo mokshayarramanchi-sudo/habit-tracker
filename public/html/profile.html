@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - Daily Habit Tracker</title>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/sidebar.css">
+    <link rel="stylesheet" href="../css/profile.css">
+</head>
+
+<body>
+    <!-- Hover Expandable Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fa-solid fa-infinity logo-icon"></i>
+                <span class="logo-text">Daily Habit Tracker</span>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li>
+                <a href="/home">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span class="link-name">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="/tasks">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span class="link-name">Task Manager</span>
+                </a>
+            </li>
+            <li>
+                <a href="/analytics">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span class="link-name">Analytics</span>
+                </a>
+            </li>
+            <li>
+                <a href="/task-analytics">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span class="link-name">Task Analytics</span>
+                </a>
+            </li>
+            <li>
+                <a href="/diary">
+                    <i class="fa-solid fa-book-journal-whills"></i>
+                    <span class="link-name">Diary</span>
+                </a>
+            </li>
+            <li>
+                <a href="/future-plans">
+                    <i class="fa-solid fa-bullseye"></i>
+                    <span class="link-name">Future Plans</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span class="link-name">About App</span>
+                </a>
+            </li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="#" class="logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span class="link-name">Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- Top Navbar -->
+        <header class="top-navbar">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Daily Habit Tracker</span>
+            </div>
+            <div class="navbar-actions">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <div class="notification">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="badge">3</span>
+                </div>
+                <a href="/profile" class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=User&background=6c5ce7&color=fff" alt="User Avatar"
+                        class="avatar">
+                </a>
+            </div>
+        </header>
+
+        <!-- Profile Section -->
+        <div class="dashboard-container profile-container" id="profile">
+            <div class="dashboard-header">
+                <h1>My Profile</h1>
+                <p class="current-date" id="currentDate"></p>
+            </div>
+
+            <div class="profile-content">
+                <!-- Left Column: Profile Card -->
+                <div class="profile-card glass-card">
+                    <div class="profile-header">
+                        <div class="profile-avatar-container">
+                            <img src="https://ui-avatars.com/api/?name=User&background=6c5ce7&color=fff&size=150"
+                                alt="User Avatar" class="profile-avatar-large">
+                            <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                            <button class="btn-edit-avatar" onclick="document.getElementById('avatarInput').click()"><i
+                                    class="fa-solid fa-pencil"></i></button>
+                        </div>
+                        <h2 id="profileNameDisplay">John Doe</h2>
+                        <p id="profileBioDisplay" class="profile-bio text-muted"
+                            style="margin-top: 10px; padding: 0 15px; font-size: 0.95rem; line-height: 1.5;"></p>
+                    </div>
+
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <h3 id="streakDaysDisplay">0</h3>
+                            <p>Day Streak</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3 id="totalTasksDisplay">0</h3>
+                            <p>Total Tasks</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3 id="completedTasksDisplay">0</h3>
+                            <p>Completed Tasks</p>
+                        </div>
+                    </div>
+
+                    <div class="profile-info-list">
+                        <div class="info-item">
+                            <i class="fa-solid fa-envelope"></i>
+                            <div>
+                                <p class="info-label">Email</p>
+                                <p class="info-value" id="profileEmailDisplay">john.doe@example.com</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fa-solid fa-calendar-alt"></i>
+                            <div>
+                                <p class="info-label">Joined</p>
+                                <p class="info-value" id="profileJoinedDisplay">January 2024</p>
+                            </div>
+                        </div>
+                        <div class="info-item" id="locationInfoItem" style="display: none;">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <div>
+                                <p class="info-label">Location</p>
+                                <p class="info-value" id="profileLocationDisplay"></p>
+                            </div>
+                        </div>
+                        <div class="info-item" id="occupationInfoItem" style="display: none;">
+                            <i class="fa-solid fa-briefcase"></i>
+                            <div>
+                                <p class="info-label">Occupation</p>
+                                <p class="info-value" id="profileOccupationDisplay"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Settings & Details -->
+                <div class="profile-settings glass-card">
+                    <div class="settings-tabs">
+                        <button class="tab-btn active" data-tab="personal-info">Personal Info</button>
+                        <button class="tab-btn" data-tab="security">Security</button>
+                        <button class="tab-btn" data-tab="account-actions">Account Actions</button>
+                    </div>
+
+                    <div class="tab-content active" id="personal-info">
+                        <form class="profile-form">
+                            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-group">
+                                    <label for="fullName">Full Name</label>
+                                    <input type="text" id="fullName" value="John Doe" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email Address</label>
+                                    <input type="email" id="email" value="john.doe@example.com" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-group">
+                                    <label for="location">Location</label>
+                                    <input type="text" id="location" placeholder="e.g. New York, USA" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="occupation">Occupation</label>
+                                    <input type="text" id="occupation" placeholder="e.g. Software Engineer" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="bio">Bio</label>
+                                <textarea id="bio" rows="4"
+                                    class="form-control">Passionate about self-improvement and building positive habits. Trying to read a book a week!</textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn-primary" id="saveProfileBtn">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="tab-content" id="security">
+                        <form class="profile-form" id="security-form">
+                            <h4 style="margin-bottom: -0.5rem; color: var(--text-dark); font-size: 1.1rem;">Change Password</h4>
+                            <div class="form-group">
+                                <label for="oldPassword">Current Password</label>
+                                <input type="password" id="oldPassword" placeholder="Enter current password"
+                                    class="form-control" required>
+                            </div>
+                            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-group">
+                                    <label for="newPassword">New Password</label>
+                                    <input type="password" id="newPassword" placeholder="Enter new password"
+                                        class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirmPassword">Confirm New Password</label>
+                                    <input type="password" id="confirmPassword" placeholder="Confirm new password"
+                                        class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-actions" style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem;">
+                                <button type="button" class="btn-primary" id="updatePasswordBtn">Update Password</button>
+                            </div>
+
+
+                            <h4 style="margin-top: 1rem; margin-bottom: -0.5rem; color: var(--text-dark); font-size: 1.1rem;">Active Sessions</h4>
+                            <div class="form-group" style="background: var(--card-bg); padding: 1.2rem; border-radius: 10px; border: 1px solid var(--border-color);">
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <div style="display: flex; align-items: center; gap: 1rem;">
+                                        <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(108, 92, 231, 0.1); display: flex; align-items: center; justify-content: center; color: var(--primary);">
+                                            <i class="fa-solid fa-laptop"></i>
+                                        </div>
+                                        <div>
+                                            <p style="font-weight: 500; color: var(--text-dark); margin-bottom: 0.2rem;">Linux - Web Browser</p>
+                                            <p class="text-muted" style="font-size: 0.85rem;"><span style="color: #10b981; font-weight: 500;">Active Now</span> • Current Session</p>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn-outline" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer;">Log Out</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="tab-content" id="account-actions">
+                        <div class="profile-form" id="account-actions-form">
+                            <!-- Log Out Section -->
+                            <div class="form-group" style="background: var(--card-bg); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
+                                <h3 style="color: var(--text-dark); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1.2rem;"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</h3>
+                                <p class="text-muted" style="line-height: 1.5; margin-bottom: 1.25rem;">Sign out of your account on this device. You will need to enter your credentials to access your account again.</p>
+                                <button type="button" class="btn-primary" id="logoutAccountBtn" style="background-color: #636e72; color: white; display: flex; align-items: center; gap: 0.5rem;"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</button>
+                            </div>
+                            <!-- Reset Data Section -->
+                            <div class="form-group" style="background: rgba(245, 158, 11, 0.05); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(245, 158, 11, 0.2); margin-top: 1rem;">
+                                <h3 style="color: #d97706; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1.2rem;"><i class="fa-solid fa-rotate-left"></i> Reset Account Data</h3>
+                                <p class="text-muted" style="line-height: 1.5; margin-bottom: 1.25rem;">Resetting your tasks will permanently delete all of your current and past tasks, habits, daily progress, and future plans. Your account details will remain.</p>
+                                <button type="button" class="btn-primary" id="resetTasksBtn" style="background-color: #f59e0b; color: white; border: none; display: flex; align-items: center; gap: 0.5rem;"><i class="fa-solid fa-triangle-exclamation"></i> Reset All Tasks</button>
+                            </div>
+                            
+                            <!-- Delete Account Section -->
+                            <div class="form-group" style="background: rgba(255, 71, 87, 0.05); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255, 71, 87, 0.2); margin-top: 1rem;">
+                                <h3 style="color: #ff4757; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1.2rem;"><i class="fa-solid fa-user-xmark"></i> Delete Account</h3>
+                                <p class="text-muted" style="line-height: 1.5; margin-bottom: 1.25rem;">Permanently remove your account and all associated data from our servers. This action is irreversible.</p>
+                                <button type="button" class="btn-primary" id="deleteAccountBtn" style="background-color: #ff4757; color: white; border: none; display: flex; align-items: center; gap: 0.5rem;"><i class="fa-solid fa-trash-can"></i> Delete Account</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script defer src="../js/sidebar.js"></script>
+    <script src="../js/home.js"></script>
+    <script src="../js/profile.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Plans - Daily Habit Tracker</title>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/home.css?v=2">
+    <link rel="stylesheet" href="../css/sidebar.css?v=2">
+    <link rel="stylesheet" href="../css/future-plans.css?v=2">
+    <script defer src="../js/home.js?v=2"></script>
+    <script defer src="../js/sidebar.js?v=2"></script>
+    <script defer src="../js/future-plans.js?v=2"></script>
+</head>
+
+<body>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fa-solid fa-infinity logo-icon"></i>
+                <span class="logo-text">Daily Habit Tracker</span>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li>
+                <a href="/home">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span class="link-name">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="/tasks">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span class="link-name">Task Manager</span>
+                </a>
+            </li>
+            <li>
+                <a href="/analytics">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span class="link-name">Analytics</span>
+                </a>
+            </li>
+            <li>
+                <a href="/task-analytics">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span class="link-name">Task Analytics</span>
+                </a>
+            </li>
+            <li>
+                <a href="/diary">
+                    <i class="fa-solid fa-book-journal-whills"></i>
+                    <span class="link-name">Diary</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="/future-plans">
+                    <i class="fa-solid fa-bullseye"></i>
+                    <span class="link-name">Future Plans</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span class="link-name">About App</span>
+                </a>
+            </li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="#" class="logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span class="link-name">Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header class="top-navbar">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Daily Habit Tracker</span>
+            </div>
+            <div class="navbar-actions">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <div class="notification">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="badge">3</span>
+                </div>
+                <a href="/profile" class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=User&background=6c5ce7&color=fff" alt="User Avatar"
+                        class="avatar">
+                </a>
+            </div>
+        </header>
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <h1>Future Plans</h1>
+                <p class="current-date">Plan your upcoming milestones, long-term goals, and next steps for habit growth.</p>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="summary-card-icon summary-icon-blue">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+                    <div>
+                        <h3>Planned Habits</h3>
+                        <p id="total-planned-habits-count" style="font-size: 1.5rem; font-weight: bold; font-family: 'Outfit';">0</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-card-icon summary-icon-purple">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                    <div>
+                        <h3>Planned Tasks</h3>
+                        <p id="total-planned-tasks-count" style="font-size: 1.5rem; font-weight: bold; font-family: 'Outfit';">0</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-card-icon summary-icon-green">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <div>
+                        <h3>Activations This Month</h3>
+                        <p id="activations-month-count" style="font-size: 1.5rem; font-weight: bold; font-family: 'Outfit';">0</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-card-icon summary-icon-orange">
+                        <i class="fa-solid fa-calendar-week"></i>
+                    </div>
+                    <div>
+                        <h3>Upcoming This Week</h3>
+                        <p id="upcoming-week-count" style="font-size: 1.5rem; font-weight: bold; font-family: 'Outfit';">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions and Filters -->
+            <div class="glass-card filters-section">
+                <div class="search-bar" style="width: auto; flex: 1; min-width: 200px;">
+                    <i class="fa-solid fa-search" style="color: var(--text-muted); margin-left: 10px;"></i>
+                    <input type="text" id="search-plans" placeholder="Search plans...">
+                </div>
+                <select class="filter-select" id="filter-category">
+                    <option value="all">All Categories</option>
+                    <option value="Health">Health</option>
+                    <option value="Study">Study</option>
+                    <option value="Fitness">Fitness</option>
+                    <option value="Productivity">Productivity</option>
+                    <option value="Other">Other</option>
+                </select>
+                <select class="filter-select" id="filter-priority">
+                    <option value="all">All Priorities</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+                <input type="date" class="filter-select" id="filter-date">
+                
+                <div class="action-buttons">
+                    <button class="btn-primary" id="add-planned-habit-btn"><i class="fa-solid fa-plus"></i> Habit</button>
+                    <button class="btn-primary" id="add-future-task-btn" style="background: var(--gradient-blue);"><i class="fa-solid fa-plus"></i> Task</button>
+                </div>
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="dashboard-grid-2" style="margin-top: 20px;">
+                <!-- Planned Habits -->
+                <div class="glass-card">
+                    <div class="section-header">
+                        <h2>Planned Habits</h2>
+                    </div>
+                    <div id="planned-habits-container" class="plans-grid">
+                        <!-- Habits will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Future To-Do List -->
+                <div class="glass-card">
+                    <div class="section-header">
+                        <h2>Future To-Do List</h2>
+                    </div>
+                    <div id="future-tasks-container" class="task-list">
+                        <!-- Tasks will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modals -->
+        <div class="modal-overlay" id="modal-overlay"></div>
+        
+        <div class="modal glass-card" id="habit-modal">
+            <div class="modal-header">
+                <h2>Add Planned Habit</h2>
+                <button class="close-btn" id="close-habit-modal"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <form id="habit-form" class="modal-form">
+                <input type="hidden" id="habit-id">
+                <div class="form-group">
+                    <label>Habit Name</label>
+                    <input type="text" id="habit-name" required placeholder="e.g., Wake Up at 5 AM">
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="habit-category">
+                        <option value="Health">Health</option>
+                        <option value="Study">Study</option>
+                        <option value="Fitness">Fitness</option>
+                        <option value="Productivity">Productivity</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Planned Start Date</label>
+                    <input type="date" id="habit-date" required>
+                </div>
+                <div class="form-group">
+                    <label>Priority</label>
+                    <select id="habit-priority">
+                        <option value="High">High</option>
+                        <option value="Medium" selected>Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Notes (Optional)</label>
+                    <textarea id="habit-notes" placeholder="e.g., Daily morning routine habit."></textarea>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">Save Habit</button>
+            </form>
+        </div>
+
+        <div class="modal glass-card" id="task-modal">
+            <div class="modal-header">
+                <h2>Add Future Task</h2>
+                <button class="close-btn" id="close-task-modal"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <form id="task-form" class="modal-form">
+                <input type="hidden" id="task-id">
+                <div class="form-group">
+                    <label>Task Title</label>
+                    <input type="text" id="task-title" required placeholder="e.g., Build Portfolio Website">
+                </div>
+                <div class="form-group" style="display: flex; gap: 10px;">
+                    <div style="flex: 1;">
+                        <label>Planned Date</label>
+                        <input type="date" id="task-date" required>
+                    </div>
+                    <div style="flex: 1;">
+                        <label>Planned Time</label>
+                        <input type="time" id="task-time" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Priority</label>
+                    <select id="task-priority">
+                        <option value="High">High</option>
+                        <option value="Medium" selected>Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Description (Optional)</label>
+                    <textarea id="task-desc" placeholder="Details about this future task..."></textarea>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; background: var(--gradient-blue); margin-top: 10px;">Save Task</button>
+            </form>
+        </div>
+    </main>
+</body>
+
+</html>

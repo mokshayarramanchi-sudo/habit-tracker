@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager - Daily Habit Tracker</title>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/sidebar.css">
+    <link rel="stylesheet" href="../css/tasks.css">
+    <script defer src="../js/home.js"></script>
+    <script defer src="../js/sidebar.js"></script>
+    <script defer src="../js/tasks.js"></script>
+</head>
+
+<body>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fa-solid fa-infinity logo-icon"></i>
+                <span class="logo-text">Daily Habit Tracker</span>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li>
+                <a href="/home">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span class="link-name">Dashboard</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="/tasks">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span class="link-name">Task Manager</span>
+                </a>
+            </li>
+            <li>
+                <a href="/analytics">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span class="link-name">Analytics</span>
+                </a>
+            </li>
+            <li>
+                <a href="/task-analytics">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span class="link-name">Task Analytics</span>
+                </a>
+            </li>
+            <li>
+                <a href="/diary">
+                    <i class="fa-solid fa-book-journal-whills"></i>
+                    <span class="link-name">Diary</span>
+                </a>
+            </li>
+            <li>
+                <a href="/future-plans">
+                    <i class="fa-solid fa-bullseye"></i>
+                    <span class="link-name">Future Plans</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span class="link-name">About App</span>
+                </a>
+            </li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="#" class="logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span class="link-name">Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header class="top-navbar">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Daily Habit Tracker</span>
+            </div>
+            <div class="navbar-actions">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <div class="notification">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="badge">3</span>
+                </div>
+                <a href="/profile" class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=User&background=6c5ce7&color=fff" alt="User Avatar"
+                        class="avatar">
+                </a>
+            </div>
+        </header>
+        <!-- Task Management Section -->
+<section class="task-management">
+
+    <div class="task-header">
+        <h1>Task Management</h1>
+        <p>Add, edit, and manage your daily routines and habits</p>
+    </div>
+
+    <!-- Add Task Card -->
+    <div class="task-card">
+
+        <h2 class="card-title">
+            <span>+</span> Add New Task
+        </h2>
+
+        <form class="task-form">
+
+            <!-- Row -->
+            <div class="form-row">
+
+                <!-- Task Name -->
+                <div class="form-group">
+                    <label>Task Name</label>
+                    <input 
+                        type="text" 
+                        placeholder="e.g. Morning Exercise"
+                    >
+                </div>
+
+                <!-- Task Type -->
+                <div class="form-group">
+                    <label>Task Type</label>
+
+                    <select name="taskType">
+                        <option>DO - Task to Complete</option>
+                        <option>NOT TO DO - Avoid Task</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <!-- Frequency + Minimum Days -->
+            <div class="form-row">
+                <div class="form-group frequency-group">
+                    <label for="frequency">Frequency</label>
+
+                    <select id="frequency" name="frequency">
+                        <option>Daily</option>
+                        <option>Weekly</option>
+                        <option>Monthly</option>
+                    </select>
+                </div>
+
+                <div class="form-group min-days-group hidden" id="minDaysGroup">
+                    <label for="minDays" id="minDaysLabel">Minimum days/week</label>
+                    <input
+                        type="number"
+                        id="minDays"
+                        min="1"
+                        max="7"
+                        placeholder="e.g. 3"
+                    >
+                </div>
+            </div>
+
+            <!-- Checkbox -->
+            <div class="checkbox-group">
+                <input type="checkbox" id="timeTracking">
+                <label for="timeTracking">
+                    Requires Time Tracking
+                </label>
+            </div>
+
+            <div class="form-group time-field-group hidden" id="timeTrackingField">
+                <label for="timeValue">Minimum min</label>
+                <input
+                    type="number"
+                    id="timeValue"
+                    min="1"
+                    placeholder="e.g.30"
+                >
+            </div>
+
+            <!-- Buttons -->
+            <div class="task-buttons">
+                <button type="submit" class="add-btn">
+                    Add Task
+                </button>
+
+                <button type="button" class="clear-btn">
+                    Clear
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Existing Tasks -->
+    <div class="existing-tasks">
+
+        <div class="existing-header">
+            <h2>Existing Tasks</h2>
+            <span id="taskCount">0 tasks</span>
+        </div>
+
+        <div class="task-list" id="taskList">
+            <p class="empty-state">No tasks added yet. Add a task to start tracking.</p>
+        </div>
+
+    </div>
+
+</section>
+    </main>
+</body>
+
+</html>
