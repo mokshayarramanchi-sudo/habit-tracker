@@ -206,4 +206,56 @@ router.delete("/me", async (req, res) => {
     }
 });
 
+// Get active sessions
+router.get("/sessions", async (req, res) => {
+    try {
+        const user = await User.findById(req.user.userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        const currentToken = req.token;
+        const sessions = user.sessions.map(s => ({
+            _id: s._id,
+            device: s.device,
+            lastActive: s.lastActive,
+            isCurrent: s.token === currentToken
+        }));
+
+        res.json({ sessions });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Logout specific session
+router.delete("/sessions/:id", async (req, res) => {
+    try {
+        const user = await User.findById(req.user.userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        const sessionId = req.params.id;
+        user.sessions = user.sessions.filter(s => s._id.toString() !== sessionId);
+        await user.save();
+
+        res.json({ message: "Session logged out" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Logout current session
+router.post("/logout", async (req, res) => {
+    try {
+        const user = await User.findById(req.user.userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        const currentToken = req.token;
+        user.sessions = user.sessions.filter(s => s.token !== currentToken);
+        await user.save();
+
+        res.json({ message: "Logged out successfully" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 module.exports = router;

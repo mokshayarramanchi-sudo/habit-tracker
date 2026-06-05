@@ -42,8 +42,14 @@ const UserSchema = new mongoose.Schema({
     },
 
     otpExpire: {
-    type: Date
-    }
+        type: Date
+    },
+
+    sessions: [{
+        token: String,
+        device: String,
+        lastActive: { type: Date, default: Date.now }
+    }]
 });
 
 module.exports = mongoose.model("User", UserSchema);

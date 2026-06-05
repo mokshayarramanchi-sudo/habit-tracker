@@ -308,13 +308,50 @@
 }
 
 @media (max-width: 768px) {
+    .analytics-page-wrapper {
+        padding: 15px;
+    }
+
+    .analytics-page-wrapper .task-header h1 {
+        font-size: 28px;
+    }
+
+    .calendar-month-title {
+        font-size: 18px;
+        min-width: 150px;
+    }
+
     .calendar-day {
-        padding: 2px;
+        padding: 5px 2px;
+        min-height: 45px;
     }
+
+    .day-number {
+        font-size: 14px;
+    }
+
     .day-stats {
-        font-size: 10px;
+        font-size: 9px;
     }
+
+    .calendar-days-header {
+        font-size: 12px;
+        gap: 5px;
+    }
+    
+    .calendar-grid {
+        gap: 5px;
+    }
+
     .insight-item {
-        min-width: 140px;
+        min-width: 100%;
+    }
+
+    .charts-section {
+        gap: 15px;
+    }
+
+    .canvas-container {
+        height: 250px;
     }
 }

@@ -156,3 +156,31 @@
     margin-bottom: 16px;
     color: var(--border-color);
 }
+
+/* Mobile Responsiveness for Diary */
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 15px;
+    }
+    
+    .mood-selector {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .mood-options {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .diary-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-primary {
+        width: 100%;
+    }
+}

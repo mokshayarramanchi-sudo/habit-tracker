@@ -186,6 +186,12 @@
     gap: 1.5rem;
 }
 
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
 .form-group {
     display: flex;
     flex-direction: column;
@@ -302,6 +308,57 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
+/* Active Sessions */
+.active-session-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.session-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.session-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(108, 92, 231, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
+.session-name {
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 0.2rem;
+}
+
+.session-status {
+    font-size: 0.85rem;
+}
+
+.status-active {
+    color: #10b981;
+    font-weight: 500;
+}
+
+.btn-logout-session {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
 /* Responsive */
 @media (max-width: 992px) {
     .profile-content {
@@ -310,5 +367,58 @@ input:checked + .slider:before {
     
     .profile-card {
         order: -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 10px;
+    }
+    .profile-card {
+        padding: 1.5rem;
+    }
+    .profile-settings {
+        padding: 1rem;
+    }
+    .settings-tabs {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .tab-btn {
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid var(--border-color);
+        padding: 10px;
+    }
+    .tab-btn.active::after {
+        display: none;
+    }
+    .tab-btn.active {
+        background: rgba(108, 92, 231, 0.1);
+        border-radius: 8px;
+        border-bottom: none;
+    }
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    .profile-stats {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1rem 0;
+    }
+    .stat-item h3 {
+        font-size: 1.8rem;
+    }
+    .profile-form .btn-primary {
+        width: 100%;
+        justify-content: center;
+    }
+    .active-session-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .btn-logout-session {
+        width: 100%;
+        text-align: center;
     }
 }

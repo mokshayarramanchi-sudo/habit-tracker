@@ -29,8 +29,12 @@ router.post("/signup", async (req, res) => {
 
         await user.save();
 
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
         const joinedDate = user._id.getTimestamp ? user._id.getTimestamp() : new Date();
+
+        const device = req.headers['user-agent'] || 'Unknown Device';
+        user.sessions.push({ token, device });
+        await user.save();
 
         res.json({
             message: "Signup Successful",
@@ -61,7 +65,11 @@ router.post("/signin", async (req, res) => {
             return res.status(400).json({ message: "Invalid credentials" });
         }
 
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+        
+        const device = req.headers['user-agent'] || 'Unknown Device';
+        user.sessions.push({ token, device });
+        await user.save();
 
         // Lazy migration: link existing orphaned tasks to this user upon first login
         await Task.updateMany(

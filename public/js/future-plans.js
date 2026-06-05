@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
             closeModal(habitModal);
         } catch (error) {
             console.error("Error saving habit plan:", error);
-            alert("Error saving habit plan: " + error.message);
+            customAlert("Error saving habit plan: " + error.message, 'error');
         }
     });
 
@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
             closeModal(taskModal);
         } catch (error) {
             console.error("Error saving task plan:", error);
-            alert("Error saving task plan: " + error.message);
+            customAlert("Error saving task plan: " + error.message, 'error');
         }
     });
 
@@ -256,8 +256,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const actBtn = document.getElementById(`activate-${item.id}`);
             
             if (editBtn) editBtn.addEventListener('click', () => editItem(item));
-            if (delBtn) delBtn.addEventListener('click', () => deleteItem(item.id, item.type));
-            if (actBtn) actBtn.addEventListener('click', () => activateItem(item));
+            if (delBtn) delBtn.addEventListener('click', () => window.deleteFuturePlan(item.id));
+            if (actBtn) actBtn.addEventListener('click', () => window.activatePlan(item.id));
         });
     }
 
@@ -348,68 +348,77 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function deleteItem(id, type) {
-        if (confirm('Are you sure you want to delete this planned item?')) {
-            try {
-                await fetch(`${API_URL}/${id}`, {
-                    method: 'DELETE',
-                    headers: getHeaders()
-                });
-                await fetchPlans();
-            } catch (error) {
-                console.error("Error deleting item:", error);
-                alert("Failed to delete item.");
-            }
-        }
-    }
-
-    async function activateItem(item) {
-        if (confirm('Activate this item? It will be moved to your active Task Manager.')) {
-            try {
-                const payload = {
-                    name: item.name || item.title,
-                    type: 'DO - Task to Complete',
-                    frequency: 'Daily',
-                    active: true,
-                    timeTracking: false,
-                    timeValue: ''
-                };
-
-                const response = await fetch('/api/tasks', {
-                    method: 'POST',
-                    headers: getHeaders(),
-                    body: JSON.stringify(payload)
-                });
-
-                if (response.ok) {
-                    // Post to analytics
-                    await fetch('/api/analytics', {
-                        method: 'POST',
-                        headers: getHeaders(),
-                        body: JSON.stringify({
-                            action: 'plan_activated',
-                            metadata: { planId: item.id, planName: item.name || item.title }
-                        })
-                    });
-
-                    // Delete from future plans
-                    await fetch(`${API_URL}/${item.id}`, {
+    window.deleteFuturePlan = (id) => {
+        customConfirm('Are you sure you want to delete this planned item?', async (confirmed) => {
+            if (confirmed) {
+                try {
+                    const response = await fetch(`${API_URL}/${id}`, {
                         method: 'DELETE',
                         headers: getHeaders()
                     });
-                    
-                    await fetchStats();
-                    await fetchPlans();
-                    alert('Activated successfully!');
-                } else {
-                    alert('Failed to activate on the backend.');
+                    if (response.ok) {
+                        customAlert('Item deleted.', 'success');
+                        await fetchPlans();
+                    } else {
+                        customAlert("Failed to delete item.", 'error');
+                    }
+                } catch (error) {
+                    console.error("Error deleting item:", error);
                 }
-            } catch (error) {
-                console.error('Activation error:', error);
-                alert('An error occurred during activation.');
             }
-        }
-    }
+        });
+    };
+
+    window.activatePlan = (id) => {
+        customConfirm('Activate this item? It will be moved to your active Task Manager.', async (confirmed) => {
+            if (confirmed) {
+                try {
+                    // Fetch all plans to find the one we want to activate
+                    const res = await fetch(API_URL, { headers: getHeaders() });
+                    if (!res.ok) return;
+                    
+                    const allPlans = await res.json();
+                    const plan = allPlans.find(p => p._id === id);
+                    if (!plan) return;
+
+                    const payload = {
+                        name: plan.title,
+                        type: plan.type === 'habit' ? 'DO - Habit' : 'DO - Task to Complete',
+                        frequency: 'Daily', // Required by backend
+                        priority: 'Medium',
+                        isFuturePlan: false,
+                        active: true
+                    };
+                    
+                    if(plan.type === 'habit') {
+                        payload.goal = 'Daily';
+                    } else {
+                        payload.date = new Date().toISOString().split('T')[0];
+                    }
+
+                    const createRes = await fetch('/api/tasks', {
+                        method: 'POST',
+                        headers: getHeaders(),
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (createRes.ok) {
+                        await fetch(`${API_URL}/${id}`, {
+                            method: 'DELETE',
+                            headers: getHeaders()
+                        });
+                        customAlert('Activated successfully!', 'success');
+                        await fetchPlans();
+                    } else {
+                        customAlert('Failed to activate on the backend.', 'error');
+                    }
+                } catch (error) {
+                    console.error("Error activating:", error);
+                    customAlert('An error occurred during activation.', 'error');
+                }
+            }
+        });
+    };
 
     function updateSummaryCards() {
         plannedHabitsCount.textContent = futureHabits.length;

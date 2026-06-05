@@ -71,6 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Save user info for profile
         // FIX: Replaced localStorage with sessionStorage to prevent user data bleeding
         // across multiple tabs for different accounts, ensuring complete data isolation.
+        sessionStorage.setItem('habitToken', data.token);
         sessionStorage.setItem('habitUserEmail', email);
         sessionStorage.setItem('habitUserName', fullName);
         if (data.user && data.user.joined) {

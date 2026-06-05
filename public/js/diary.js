@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // User entries array starts empty
     let userEntries = [];
+    let editingId = null;
     
     const getHeaders = () => {
         const token = sessionStorage.getItem('habitToken');
@@ -80,9 +81,85 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
                 <h4 class="recent-entry-title">${entry.title}</h4>
                 <p class="recent-entry-preview">${entry.preview}</p>
+                <div class="recent-entry-actions" style="margin-top: 10px; display: flex; gap: 8px;">
+                    <button class="btn-edit" data-id="${entry.id}" style="padding: 4px 8px; background: none; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; color: #555;"><i class="fa-solid fa-pen"></i> Edit</button>
+                    <button class="btn-delete" data-id="${entry.id}" style="padding: 4px 8px; background: none; border: 1px solid #ff6b6b; border-radius: 4px; cursor: pointer; color: #ff6b6b;"><i class="fa-solid fa-trash"></i> Delete</button>
+                </div>
             `;
             recentEntriesList.appendChild(card);
         });
+
+        // Add event listeners for edit and delete buttons
+        document.querySelectorAll('.btn-edit').forEach(btn => {
+            btn.addEventListener('click', handleEditEntry);
+        });
+
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.addEventListener('click', handleDeleteEntry);
+        });
+    }
+
+    function handleEditEntry(e) {
+        const id = e.currentTarget.getAttribute('data-id');
+        const entry = userEntries.find(ent => ent.id === id);
+        if (entry) {
+            editingId = id;
+            document.getElementById('entry-title').value = entry.title === 'Untitled Entry' ? '' : entry.title;
+            document.getElementById('entry-text').value = entry.preview;
+            
+            // Set mood
+            moodBtns.forEach(b => b.classList.remove('selected'));
+            selectedMood = null;
+            const moodBtn = Array.from(moodBtns).find(btn => btn.innerText === entry.moodIcon);
+            if (moodBtn) {
+                moodBtn.classList.add('selected');
+                selectedMood = moodBtn.dataset.mood;
+            }
+
+            document.getElementById('save-entry-btn').innerHTML = '<i class="fa-solid fa-save"></i> Update Entry';
+            
+            // Scroll to form
+            document.querySelector('.diary-main-card').scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    function handleDeleteEntry(e) {
+        const id = e.currentTarget.getAttribute('data-id');
+        customConfirm("Are you sure you want to delete this diary entry?", async (confirmed) => {
+            if (!confirmed) return;
+            
+            try {
+                const response = await fetch(`/api/diary/${id}`, {
+                    method: 'DELETE',
+                    headers: getHeaders()
+                });
+
+                if (response.ok) {
+                    customAlert('Entry deleted successfully!', 'success');
+                    
+                    // Clear form if we were editing this exact entry
+                    if (editingId === id) {
+                        resetForm();
+                    }
+                    
+                    await fetchEntries();
+                } else {
+                    customAlert('Failed to delete entry.', 'error');
+                }
+            } catch (error) {
+                console.error("Error deleting entry:", error);
+                customAlert('An error occurred while deleting.', 'error');
+            }
+        });
+    }
+
+    function resetForm() {
+        editingId = null;
+        document.getElementById('entry-title').value = '';
+        document.getElementById('entry-text').value = '';
+        moodBtns.forEach(b => b.classList.remove('selected'));
+        selectedMood = null;
+        document.getElementById('save-entry-btn').innerHTML = '<i class="fa-solid fa-save"></i> Save Entry';
     }
 
     function updateTotalEntries() {
@@ -173,7 +250,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const text = document.getElementById('entry-text').value;
             
             if (!selectedMood && !text) {
-                alert('Please select a mood or write some thoughts before saving.');
+                customAlert('Please select a mood or write some thoughts before saving.', 'error');
                 return;
             }
 
@@ -188,8 +265,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             try {
-                const response = await fetch('/api/diary', {
-                    method: 'POST',
+                const isUpdating = editingId !== null;
+                const url = isUpdating ? `/api/diary/${editingId}` : '/api/diary';
+                const method = isUpdating ? 'PUT' : 'POST';
+
+                const response = await fetch(url, {
+                    method: method,
                     headers: getHeaders(),
                     body: JSON.stringify({
                         title: title || 'Untitled Entry',
@@ -199,20 +280,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
 
                 if (response.ok) {
-                    alert('Diary entry saved successfully!');
+                    customAlert(`Diary entry ${isUpdating ? 'updated' : 'saved'} successfully!`, 'success');
                     await fetchEntries(); // Reload from backend
-                    
-                    // Clear form
-                    document.getElementById('entry-title').value = '';
-                    document.getElementById('entry-text').value = '';
-                    moodBtns.forEach(b => b.classList.remove('selected'));
-                    selectedMood = null;
+                    resetForm();
                 } else {
-                    alert('Failed to save entry.');
+                    customAlert(`Failed to ${isUpdating ? 'update' : 'save'} entry.`, 'error');
                 }
             } catch (error) {
                 console.error("Error saving entry:", error);
-                alert('An error occurred while saving.');
+                customAlert('An error occurred while saving.', 'error');
             } finally {
                 saveBtn.innerHTML = originalText;
                 saveBtn.disabled = false;

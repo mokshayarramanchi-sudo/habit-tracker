@@ -203,8 +203,10 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 await updateTask(taskId, { active: !task.active });
                 await loadTasks();
+                customAlert(`Task ${!task.active ? 'activated' : 'deactivated'} successfully!`, 'success');
             } catch (error) {
                 console.error(error);
+                customAlert('Failed to update task status.', 'error');
             }
             return;
         }
@@ -214,6 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const index = findTaskIndexById(taskId);
             if (index === -1) return;
             populateForm(tasks[index], index);
+            customAlert('Task loaded for editing. Make your changes above.', 'info');
             return;
         }
 
@@ -222,15 +225,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const index = findTaskIndexById(taskId);
             if (index === -1) return;
 
-            try {
-                await deleteTaskById(taskId);
-                if (editTaskId === taskId) {
-                    resetForm();
+            customConfirm("Are you sure you want to delete this task?", async (confirmed) => {
+                if (!confirmed) return;
+                try {
+                    await deleteTaskById(taskId);
+                    if (editTaskId === taskId) {
+                        resetForm();
+                    }
+                    await loadTasks();
+                    customAlert('Task deleted successfully!', 'success');
+                } catch (error) {
+                    console.error(error);
+                    customAlert('Failed to delete task.', 'error');
                 }
-                await loadTasks();
-            } catch (error) {
-                console.error(error);
-            }
+            });
+            return;
         }
     });
 
@@ -282,14 +291,17 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             if (editTaskId) {
                 await updateTask(editTaskId, payload);
+                customAlert('Task updated successfully!', 'success');
             } else {
                 await createTask(payload);
+                customAlert('Task created successfully!', 'success');
             }
 
             await loadTasks();
             resetForm();
         } catch (error) {
             console.error(error);
+            customAlert('An error occurred while saving the task.', 'error');
         }
     });
 

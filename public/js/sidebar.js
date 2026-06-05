@@ -26,8 +26,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const logoutLinks = document.querySelectorAll('.logout');
     logoutLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
+        link.addEventListener('click', async (e) => {
             e.preventDefault();
+            const token = sessionStorage.getItem('habitToken');
+            if (token) {
+                try {
+                    await fetch('/api/users/logout', {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                } catch (err) {
+                    console.error('Logout error:', err);
+                }
+            }
             sessionStorage.clear();
             localStorage.clear();
             window.location.href = '/signin';

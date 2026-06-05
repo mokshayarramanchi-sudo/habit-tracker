@@ -1208,3 +1208,92 @@ a {
     border-radius: 16px;
     border: 1px dashed var(--border-color);
 }
+
+/* Global Mobile Responsiveness */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        margin-bottom: 65px; /* Space for bottom nav */
+    }
+
+    .top-navbar {
+        padding: 0 20px;
+        height: 60px;
+    }
+
+    .top-navbar .logo span {
+        display: inline; /* Restore text */
+        font-size: 16px;
+    }
+
+    .top-navbar .logo i {
+        font-size: 18px;
+    }
+
+    .top-navbar .logo {
+        gap: 6px;
+    }
+
+    .search-bar {
+        width: 150px; /* Shrink search bar */
+        padding: 8px 15px;
+    }
+
+    .dashboard-container {
+        padding: 20px 15px;
+        gap: 20px;
+    }
+
+    .dashboard-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .dashboard-grid-2 {
+        grid-template-columns: 1fr; /* Stack complex layouts */
+    }
+
+    .summary-cards {
+        grid-template-columns: 1fr 1fr; /* 2x2 grid on mobile */
+        gap: 15px;
+    }
+
+    .summary-card {
+        padding: 15px;
+        min-height: 100px;
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    .summary-card-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+    }
+
+    .progress-panel h2 {
+        font-size: 1.8rem;
+    }
+
+    .welcome-text h1 {
+        font-size: 22px;
+    }
+
+    .task-records-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .search-bar {
+        display: none; /* Hide search bar on very small screens */
+    }
+    
+    .summary-cards {
+        grid-template-columns: 1fr; /* Stack all summary cards */
+    }
+    
+    .progress-panel {
+        min-height: 140px;
+    }
+}

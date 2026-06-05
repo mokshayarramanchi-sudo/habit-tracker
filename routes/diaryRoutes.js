@@ -30,4 +30,33 @@ router.post("/", async (req, res) => {
     }
 });
 
+router.put("/:id", async (req, res) => {
+    try {
+        const { title, content, moodIcon } = req.body;
+        const entry = await Diary.findOneAndUpdate(
+            { _id: req.params.id, userId: req.user.userId },
+            { title, content, moodIcon },
+            { new: true }
+        );
+        if (!entry) {
+            return res.status(404).json({ message: "Diary entry not found" });
+        }
+        res.json(entry);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+router.delete("/:id", async (req, res) => {
+    try {
+        const entry = await Diary.findOneAndDelete({ _id: req.params.id, userId: req.user.userId });
+        if (!entry) {
+            return res.status(404).json({ message: "Diary entry not found" });
+        }
+        res.json({ message: "Diary entry deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 module.exports = router;

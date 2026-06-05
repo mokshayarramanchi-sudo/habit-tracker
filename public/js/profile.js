@@ -172,14 +172,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.ok) {
                     const data = await response.json();
                     updateUI(data.user, null);
-                    alert('Profile updated successfully!');
+                    customAlert('Profile updated successfully!', 'success');
                 } else {
                     const error = await response.json();
-                    alert(error.message || 'Failed to update profile');
+                    customAlert(error.message || 'Failed to update profile', 'error');
                 }
             } catch (error) {
                 console.error('Error updating profile:', error);
-                alert('An error occurred while saving.');
+                customAlert('An error occurred while saving.', 'error');
             } finally {
                 saveBtn.textContent = 'Save Changes';
                 saveBtn.disabled = false;
@@ -266,6 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const oldPasswordInput = document.getElementById('oldPassword');
     const newPasswordInput = document.getElementById('newPassword');
     const confirmPasswordInput = document.getElementById('confirmPassword');
+    const updatePasswordForm = document.getElementById('security-form');
 
     if (updatePasswordBtn) {
         updatePasswordBtn.addEventListener('click', async () => {
@@ -274,17 +275,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const confirmPassword = confirmPasswordInput.value;
 
             if (!oldPassword || !newPassword || !confirmPassword) {
-                alert('Please fill out all password fields.');
+                customAlert('Please fill out all password fields.', 'error');
                 return;
             }
 
             if (newPassword !== confirmPassword) {
-                alert('New passwords do not match.');
+                customAlert('New passwords do not match.', 'error');
                 return;
             }
 
             if (newPassword.length < 6) {
-                alert('Password must be at least 6 characters long.');
+                customAlert('Password must be at least 6 characters long.', 'error');
                 return;
             }
 
@@ -305,15 +306,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (response.ok) {
-                    alert('Password updated successfully!');
-                    document.getElementById('security-form').reset();
+                    customAlert('Password updated successfully!', 'success');
+                    if (updatePasswordForm) updatePasswordForm.reset();
                 } else {
                     const error = await response.json();
-                    alert(error.message || 'Failed to update password.');
+                    customAlert(error.message || 'Failed to update password.', 'error');
                 }
             } catch (error) {
                 console.error('Error updating password:', error);
-                alert('An error occurred while updating password.');
+                customAlert('An error occurred while updating password.', 'error');
             } finally {
                 updatePasswordBtn.textContent = 'Update Password';
                 updatePasswordBtn.disabled = false;
@@ -321,97 +322,216 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const resetTasksBtn = document.getElementById('resetTasksBtn');
-    if (resetTasksBtn) {
-        resetTasksBtn.addEventListener('click', async () => {
-            const confirmed = confirm('Are you sure you want to reset all tasks? This will permanently delete all tasks, habits, daily progress, and future plans. This action cannot be undone.');
-            
-            if (!confirmed) return;
+    const btnResetTasks = document.getElementById('resetTasksBtn');
+    if (btnResetTasks) {
+        btnResetTasks.addEventListener('click', () => {
+            customConfirm('Are you sure you want to reset all tasks? This will permanently delete all tasks, habits, daily progress, and future plans. This action cannot be undone.', async (confirmed) => {
+                if (!confirmed) return;
 
-            const token = sessionStorage.getItem('habitToken');
-            if (!token) return;
+                const token = sessionStorage.getItem('habitToken');
+                if (!token) return;
 
-            try {
-                resetTasksBtn.textContent = 'Resetting...';
-                resetTasksBtn.disabled = true;
+                const originalHtml = btnResetTasks.innerHTML;
+                btnResetTasks.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Resetting...';
+                btnResetTasks.disabled = true;
 
-                const response = await fetch('/api/users/reset-tasks', {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
+                try {
+                    const response = await fetch('/api/users/reset-tasks', {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        customAlert('All tasks have been successfully reset.', 'success');
+                        fetchProfileData();
+                    } else {
+                        const error = await response.json();
+                        customAlert(error.message || 'Failed to reset tasks.', 'error');
                     }
-                });
-
-                if (response.ok) {
-                    alert('All tasks have been successfully reset.');
-                    // Refresh stats on profile page
-                    fetchProfileData();
-                } else {
-                    const error = await response.json();
-                    alert(error.message || 'Failed to reset tasks.');
+                } catch (error) {
+                    console.error('Error resetting tasks:', error);
+                    customAlert('An error occurred while resetting tasks.', 'error');
+                } finally {
+                    btnResetTasks.innerHTML = originalHtml;
+                    btnResetTasks.disabled = false;
                 }
-            } catch (error) {
-                console.error('Error resetting tasks:', error);
-                alert('An error occurred while resetting tasks.');
-            } finally {
-                resetTasksBtn.textContent = 'Reset All Tasks';
-                resetTasksBtn.disabled = false;
-            }
+            });
         });
     }
 
-    const logoutAccountBtn = document.getElementById('logoutAccountBtn');
-    if (logoutAccountBtn) {
-        logoutAccountBtn.addEventListener('click', () => {
-            const confirmed = confirm('Are you sure you want to log out?');
-            if (confirmed) {
-                sessionStorage.removeItem('habitToken');
-                sessionStorage.removeItem('habitUserName');
-                sessionStorage.removeItem('habitUserEmail');
-                window.location.href = '/signin';
-            }
-        });
-    }
-
-    const deleteAccountBtn = document.getElementById('deleteAccountBtn');
-    if (deleteAccountBtn) {
-        deleteAccountBtn.addEventListener('click', async () => {
-            const confirmed = confirm('Are you sure you want to permanently delete your account? This action is irreversible.');
-            if (!confirmed) return;
-
-            const token = sessionStorage.getItem('habitToken');
-            if (!token) return;
-
-            try {
-                deleteAccountBtn.textContent = 'Deleting...';
-                deleteAccountBtn.disabled = true;
-
-                const response = await fetch('/api/users/me', {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
+    const btnLogout = document.getElementById('logoutAccountBtn');
+    if (btnLogout) {
+        btnLogout.addEventListener('click', () => {
+            customConfirm('Are you sure you want to log out?', async (confirmed) => {
+                if (confirmed) {
+                    const token = sessionStorage.getItem('habitToken');
+                    if (token) {
+                        try {
+                            await fetch('/api/users/logout', {
+                                method: 'POST',
+                                headers: { 'Authorization': `Bearer ${token}` }
+                            });
+                        } catch (err) {}
                     }
-                });
-
-                if (response.ok) {
-                    alert('Your account has been successfully deleted.');
                     sessionStorage.removeItem('habitToken');
                     sessionStorage.removeItem('habitUserName');
                     sessionStorage.removeItem('habitUserEmail');
-                    window.location.href = '/signup';
-                } else {
-                    const error = await response.json();
-                    alert(error.message || 'Failed to delete account.');
+                    window.location.href = '/signin';
                 }
-            } catch (error) {
-                console.error('Error deleting account:', error);
-                alert('An error occurred while deleting your account.');
-            } finally {
-                deleteAccountBtn.textContent = 'Delete Account';
-                deleteAccountBtn.disabled = false;
-            }
+            });
         });
     }
 
+    const btnDeleteAccount = document.getElementById('deleteAccountBtn');
+    if (btnDeleteAccount) {
+        btnDeleteAccount.addEventListener('click', () => {
+            customConfirm('Are you sure you want to permanently delete your account? This action is irreversible.', async (confirmed) => {
+                if (!confirmed) return;
+
+                const token = sessionStorage.getItem('habitToken');
+                if (!token) return;
+
+                const originalHtml = btnDeleteAccount.innerHTML;
+                btnDeleteAccount.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Deleting...';
+                btnDeleteAccount.disabled = true;
+
+                try {
+                    const response = await fetch('/api/users/me', {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        customAlert('Your account has been successfully deleted.', 'success');
+                        sessionStorage.removeItem('habitToken');
+                        sessionStorage.removeItem('habitUserName');
+                        sessionStorage.removeItem('habitUserEmail');
+                        window.location.href = '/signup';
+                    } else {
+                        const error = await response.json();
+                        customAlert(error.message || 'Failed to delete account.', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error deleting account:', error);
+                    customAlert('An error occurred while deleting your account.', 'error');
+                } finally {
+                    btnDeleteAccount.innerHTML = originalHtml;
+                    btnDeleteAccount.disabled = false;
+                }
+            });
+        });
+    }
+
+    const loadSessions = async () => {
+        const token = sessionStorage.getItem('habitToken');
+        if (!token) return;
+
+        const getDeviceName = (userAgent) => {
+            if (!userAgent || userAgent === 'Unknown Device') return 'Unknown Device';
+            let os = 'Unknown OS';
+            let browser = 'Unknown Browser';
+
+            if (userAgent.includes('Android')) os = 'Android';
+            else if (userAgent.includes('like Mac')) os = 'iOS';
+            else if (userAgent.includes('Win')) os = 'Windows';
+            else if (userAgent.includes('Mac')) os = 'Mac OS';
+            else if (userAgent.includes('Linux')) os = 'Linux';
+
+            if (userAgent.includes('Edg')) browser = 'Edge';
+            else if (userAgent.includes('OPR') || userAgent.includes('Opera')) browser = 'Opera';
+            else if (userAgent.includes('Chrome')) browser = 'Chrome';
+            else if (userAgent.includes('Firefox')) browser = 'Firefox';
+            else if (userAgent.includes('Safari')) browser = 'Safari';
+
+            return `${os} - ${browser}`;
+        };
+
+        try {
+            const response = await fetch('/api/users/sessions', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const container = document.getElementById('activeSessionsContainer');
+                if (!container) return;
+
+                container.innerHTML = '';
+                
+                data.sessions.forEach(session => {
+                    const sessionCard = document.createElement('div');
+                    sessionCard.className = 'active-session-card';
+                    
+                    const isCurrent = session.isCurrent;
+                    const friendlyName = getDeviceName(session.device);
+
+                    const statusHtml = isCurrent 
+                        ? `<span class="status-active">Active Now</span> • Current Device`
+                        : `Last active: ${new Date(session.lastActive).toLocaleDateString()}`;
+
+                    const iconHtml = friendlyName.includes('Android') || friendlyName.includes('iOS')
+                        ? `<i class="fa-solid fa-mobile-screen"></i>`
+                        : `<i class="fa-solid fa-laptop"></i>`;
+
+                    sessionCard.innerHTML = `
+                        <div class="session-info">
+                            <div class="session-icon">
+                                ${iconHtml}
+                            </div>
+                            <div class="session-details">
+                                <p class="session-name">${friendlyName}</p>
+                                <p class="text-muted session-status">${statusHtml}</p>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-outline btn-logout-session" data-id="${session._id}">
+                            ${isCurrent ? 'Current' : 'Log Out'}
+                        </button>
+                    `;
+
+                    container.appendChild(sessionCard);
+                });
+
+                // Attach logout listeners
+                const logoutBtns = document.querySelectorAll('.btn-logout-session');
+                logoutBtns.forEach(btn => {
+                    if (btn.textContent.trim() === 'Current') {
+                        btn.disabled = true;
+                        btn.style.opacity = '0.5';
+                        btn.style.cursor = 'not-allowed';
+                        return;
+                    }
+                    
+                    btn.addEventListener('click', async () => {
+                        const sessionId = btn.getAttribute('data-id');
+                        try {
+                            btn.textContent = 'Logging out...';
+                            const res = await fetch(`/api/users/sessions/${sessionId}`, {
+                                method: 'DELETE',
+                                headers: { 'Authorization': `Bearer ${token}` }
+                            });
+                            
+                            if (res.ok) {
+                                loadSessions();
+                                customAlert('Device logged out successfully', 'success');
+                            } else {
+                                customAlert('Failed to log out device', 'error');
+                                btn.textContent = 'Log Out';
+                            }
+                        } catch (err) {
+                            console.error('Error logging out device:', err);
+                        }
+                    });
+                });
+            }
+        } catch (error) {
+            console.error('Error fetching sessions:', error);
+        }
+    };
+
     fetchProfileData();
+    loadSessions();
 });
