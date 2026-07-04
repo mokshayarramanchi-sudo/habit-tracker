@@ -65,23 +65,27 @@ document.addEventListener('DOMContentLoaded', function () {
           return;
         }
 
-        // FIX: Replaced localStorage with localStorage to prevent token bleeding 
-        // across multiple tabs for different accounts, ensuring complete data isolation.
         localStorage.setItem('habitToken', data.token);
+        sessionStorage.setItem('habitToken', data.token);
         
         // Save user info for profile
         localStorage.setItem('habitUserEmail', email);
+        sessionStorage.setItem('habitUserEmail', email);
         if (data.user && data.user.fullName) {
           localStorage.setItem('habitUserName', data.user.fullName);
+          sessionStorage.setItem('habitUserName', data.user.fullName);
         } else {
           // Default name from email prefix if backend doesn't return user
           const namePart = email.split('@')[0];
           localStorage.setItem('habitUserName', namePart);
+          sessionStorage.setItem('habitUserName', namePart);
         }
         if (data.user && data.user.joined) {
           localStorage.setItem('habitUserJoined', data.user.joined);
+          sessionStorage.setItem('habitUserJoined', data.user.joined);
         }
         if (data.user && data.user.avatarBase64) {
+          localStorage.setItem('habitUserAvatar', data.user.avatarBase64);
           localStorage.setItem('habitUserAvatar', data.user.avatarBase64);
         }
 

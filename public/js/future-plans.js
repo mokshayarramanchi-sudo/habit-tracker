@@ -1,3 +1,31 @@
+const migrateAuthStorage = () => {
+    const legacyToken = sessionStorage.getItem('habitToken');
+    const currentToken = localStorage.getItem('habitToken');
+    if (legacyToken && !currentToken) {
+        localStorage.setItem('habitToken', legacyToken);
+    }
+
+    const legacyUserName = sessionStorage.getItem('habitUserName');
+    const currentUserName = localStorage.getItem('habitUserName');
+    if (legacyUserName && !currentUserName) {
+        localStorage.setItem('habitUserName', legacyUserName);
+    }
+
+    const legacyUserEmail = sessionStorage.getItem('habitUserEmail');
+    const currentUserEmail = localStorage.getItem('habitUserEmail');
+    if (legacyUserEmail && !currentUserEmail) {
+        localStorage.setItem('habitUserEmail', legacyUserEmail);
+    }
+
+    const legacyUserAvatar = sessionStorage.getItem('habitUserAvatar');
+    const currentUserAvatar = localStorage.getItem('habitUserAvatar');
+    if (legacyUserAvatar && !currentUserAvatar) {
+        localStorage.setItem('habitUserAvatar', legacyUserAvatar);
+    }
+};
+
+migrateAuthStorage();
+
 document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements
     const plannedHabitsContainer = document.getElementById('planned-habits-container');
