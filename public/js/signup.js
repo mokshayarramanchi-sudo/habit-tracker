@@ -69,16 +69,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Save user info for profile
-        // FIX: Replaced localStorage with sessionStorage to prevent user data bleeding
+        // FIX: Replaced localStorage with localStorage to prevent user data bleeding
         // across multiple tabs for different accounts, ensuring complete data isolation.
-        sessionStorage.setItem('habitToken', data.token);
-        sessionStorage.setItem('habitUserEmail', email);
-        sessionStorage.setItem('habitUserName', fullName);
+        localStorage.setItem('habitToken', data.token);
+        localStorage.setItem('habitUserEmail', email);
+        localStorage.setItem('habitUserName', fullName);
         if (data.user && data.user.joined) {
-          sessionStorage.setItem('habitUserJoined', data.user.joined);
+          localStorage.setItem('habitUserJoined', data.user.joined);
         }
         if (data.user && data.user.avatarBase64) {
-          sessionStorage.setItem('habitUserAvatar', data.user.avatarBase64);
+          localStorage.setItem('habitUserAvatar', data.user.avatarBase64);
         }
 
         window.location.href = '/home';

@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let activationStats = { month: 0 };
 
     const getHeaders = () => {
-        const token = sessionStorage.getItem('habitToken');
+        const token = localStorage.getItem('habitToken');
         return {
             'Content-Type': 'application/json',
             'Authorization': token ? `Bearer ${token}` : ''

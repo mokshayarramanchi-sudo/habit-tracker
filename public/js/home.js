@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Check Authentication
-    const token = sessionStorage.getItem('habitToken');
+    const token = localStorage.getItem('habitToken');
     if (!token) {
         window.location.href = '/signin';
         return;
@@ -16,9 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Update Avatar
-    const userName = sessionStorage.getItem('habitUserName') || 'User';
+    const userName = localStorage.getItem('habitUserName') || 'User';
     const firstLetter = userName.charAt(0).toUpperCase();
-    const customAvatar = sessionStorage.getItem('habitUserAvatar');
+    const customAvatar = localStorage.getItem('habitUserAvatar');
     const avatars = document.querySelectorAll('.avatar, .profile-avatar-large');
     avatars.forEach(avatar => {
         if (customAvatar) {
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const fetchTasksAndProgress = async () => {
         try {
-            const token = sessionStorage.getItem('habitToken');
+            const token = localStorage.getItem('habitToken');
             const response = await fetch('/api/progress/dashboard', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                const token = sessionStorage.getItem('habitToken');
+                const token = localStorage.getItem('habitToken');
                 const prevHtml = saveProgressBtn.innerHTML;
                 saveProgressBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
                 

@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let editingId = null;
     
     const getHeaders = () => {
-        const token = sessionStorage.getItem('habitToken');
+        const token = localStorage.getItem('habitToken');
         return {
             'Content-Type': 'application/json',
             'Authorization': token ? `Bearer ${token}` : ''

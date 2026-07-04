@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const fetchAnalytics = async () => {
         try {
-            const token = sessionStorage.getItem('habitToken');
+            const token = localStorage.getItem('habitToken');
             if (!token) {
                 window.location.href = '/signin';
                 return;

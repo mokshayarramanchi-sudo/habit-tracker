@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const fetchData = async () => {
         try {
-            const token = sessionStorage.getItem('habitToken');
+            const token = localStorage.getItem('habitToken');
             if (!token) {
                 window.location.href = '/signin';
                 return;
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         cardsContainer.innerHTML = '<div class="empty-state">Loading analytics...</div>';
         
         try {
-            const token = sessionStorage.getItem('habitToken');
+            const token = localStorage.getItem('habitToken');
             if (!token) return;
 
             const res = await fetch(`/api/analytics/task-progress?filter=${currentFilter}&taskId=${currentTaskSelection}`, {

@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Global Auth Protection
-    const globalToken = sessionStorage.getItem('habitToken');
+    const globalToken = localStorage.getItem('habitToken');
     if (!globalToken) {
         window.location.href = '/signin';
         return;
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     logoutLinks.forEach(link => {
         link.addEventListener('click', async (e) => {
             e.preventDefault();
-            const token = sessionStorage.getItem('habitToken');
+            const token = localStorage.getItem('habitToken');
             if (token) {
                 try {
                     await fetch('/api/users/logout', {
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Logout error:', err);
                 }
             }
-            sessionStorage.clear();
+            localStorage.clear();
             localStorage.clear();
             window.location.href = '/signin';
         });
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const markReadBtn = document.getElementById('markReadBtn');
 
         const fetchNotifications = async () => {
-            const token = sessionStorage.getItem('habitToken');
+            const token = localStorage.getItem('habitToken');
             if (!token) return;
             try {
                 const response = await fetch('/api/notifications', {
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Global Session Expiry Handler
                 if (response.status === 401) {
-                    sessionStorage.clear();
+                    localStorage.clear();
                     window.location.href = '/signin';
                     return;
                 }
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         markReadBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
-            const token = sessionStorage.getItem('habitToken');
+            const token = localStorage.getItem('habitToken');
             if (!token) return;
             try {
                 const res = await fetch('/api/notifications/mark-read', {

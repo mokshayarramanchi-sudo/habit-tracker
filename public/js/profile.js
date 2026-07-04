@@ -75,9 +75,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 occupationInfoItem.style.display = 'none';
             }
 
-            // FIX: Replaced localStorage with sessionStorage to isolate tab sessions
-            sessionStorage.setItem('habitUserName', user.fullName || '');
-            sessionStorage.setItem('habitUserEmail', user.email || '');
+            // FIX: Replaced localStorage with localStorage to isolate tab sessions
+            localStorage.setItem('habitUserName', user.fullName || '');
+            localStorage.setItem('habitUserEmail', user.email || '');
 
             // Dynamically update avatars
             const userName = user.fullName || 'User';
@@ -92,9 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             if (user.avatarBase64) {
-                sessionStorage.setItem('habitUserAvatar', user.avatarBase64);
+                localStorage.setItem('habitUserAvatar', user.avatarBase64);
             } else {
-                sessionStorage.removeItem('habitUserAvatar');
+                localStorage.removeItem('habitUserAvatar');
             }
         }
 
@@ -109,15 +109,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Load initial data from sessionStorage for faster render
+    // Load initial data from localStorage for faster render
     updateUI({
-        fullName: sessionStorage.getItem('habitUserName'),
-        email: sessionStorage.getItem('habitUserEmail')
+        fullName: localStorage.getItem('habitUserName'),
+        email: localStorage.getItem('habitUserEmail')
     }, null);
 
     const fetchProfileData = async () => {
         try {
-            const token = sessionStorage.getItem('habitToken');
+            const token = localStorage.getItem('habitToken');
             if (!token) {
                 window.location.href = '/signin';
                 return;
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
         saveBtn.addEventListener('click', async (e) => {
             e.preventDefault();
             console.log('Save profile button clicked');
-            const token = sessionStorage.getItem('habitToken');
+            const token = localStorage.getItem('habitToken');
             if (!token) return;
 
             const payload = {
@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
 
                         // Auto-save avatar to database
-                        const token = sessionStorage.getItem('habitToken');
+                        const token = localStorage.getItem('habitToken');
                         if (token) {
                             const payload = {
                                 fullName: nameInput ? nameInput.value.trim() : '',
@@ -250,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 body: JSON.stringify(payload)
                             }).then(response => {
                                 if (response.ok) {
-                                    sessionStorage.setItem('habitUserAvatar', currentAvatarBase64);
+                                    localStorage.setItem('habitUserAvatar', currentAvatarBase64);
                                 }
                             }).catch(err => console.error('Error saving avatar:', err));
                         }
@@ -289,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const token = sessionStorage.getItem('habitToken');
+            const token = localStorage.getItem('habitToken');
             if (!token) return;
 
             try {
@@ -328,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
             customConfirm('Are you sure you want to reset all tasks? This will permanently delete all tasks, habits, daily progress, and future plans. This action cannot be undone.', async (confirmed) => {
                 if (!confirmed) return;
 
-                const token = sessionStorage.getItem('habitToken');
+                const token = localStorage.getItem('habitToken');
                 if (!token) return;
 
                 const originalHtml = btnResetTasks.innerHTML;
@@ -366,7 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnLogout.addEventListener('click', () => {
             customConfirm('Are you sure you want to log out?', async (confirmed) => {
                 if (confirmed) {
-                    const token = sessionStorage.getItem('habitToken');
+                    const token = localStorage.getItem('habitToken');
                     if (token) {
                         try {
                             await fetch('/api/users/logout', {
@@ -375,9 +375,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             });
                         } catch (err) {}
                     }
-                    sessionStorage.removeItem('habitToken');
-                    sessionStorage.removeItem('habitUserName');
-                    sessionStorage.removeItem('habitUserEmail');
+                    localStorage.removeItem('habitToken');
+                    localStorage.removeItem('habitUserName');
+                    localStorage.removeItem('habitUserEmail');
                     window.location.href = '/signin';
                 }
             });
@@ -390,7 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
             customConfirm('Are you sure you want to permanently delete your account? This action is irreversible.', async (confirmed) => {
                 if (!confirmed) return;
 
-                const token = sessionStorage.getItem('habitToken');
+                const token = localStorage.getItem('habitToken');
                 if (!token) return;
 
                 const originalHtml = btnDeleteAccount.innerHTML;
@@ -407,9 +407,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (response.ok) {
                         customAlert('Your account has been successfully deleted.', 'success');
-                        sessionStorage.removeItem('habitToken');
-                        sessionStorage.removeItem('habitUserName');
-                        sessionStorage.removeItem('habitUserEmail');
+                        localStorage.removeItem('habitToken');
+                        localStorage.removeItem('habitUserName');
+                        localStorage.removeItem('habitUserEmail');
                         window.location.href = '/signup';
                     } else {
                         const error = await response.json();
@@ -427,7 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const loadSessions = async () => {
-        const token = sessionStorage.getItem('habitToken');
+        const token = localStorage.getItem('habitToken');
         if (!token) return;
 
         const getDeviceName = (userAgent) => {

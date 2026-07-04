@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const getAuthHeaders = (json = true) => {
-        const token = sessionStorage.getItem('habitToken');
+        const token = localStorage.getItem('habitToken');
         const headers = { 'Authorization': `Bearer ${token}` };
         if (json) headers['Content-Type'] = 'application/json';
         return headers;
