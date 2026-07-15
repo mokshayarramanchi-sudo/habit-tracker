@@ -1,30 +1,32 @@
-const migrateAuthStorage = () => {
-    const legacyToken = sessionStorage.getItem('habitToken');
-    const currentToken = localStorage.getItem('habitToken');
-    if (legacyToken && !currentToken) {
-        localStorage.setItem('habitToken', legacyToken);
-    }
+if (!window.migrateAuthStorage) {
+    window.migrateAuthStorage = () => {
+        const legacyToken = sessionStorage.getItem('habitToken');
+        const currentToken = localStorage.getItem('habitToken');
+        if (legacyToken && !currentToken) {
+            localStorage.setItem('habitToken', legacyToken);
+        }
 
-    const legacyUserName = sessionStorage.getItem('habitUserName');
-    const currentUserName = localStorage.getItem('habitUserName');
-    if (legacyUserName && !currentUserName) {
-        localStorage.setItem('habitUserName', legacyUserName);
-    }
+        const legacyUserName = sessionStorage.getItem('habitUserName');
+        const currentUserName = localStorage.getItem('habitUserName');
+        if (legacyUserName && !currentUserName) {
+            localStorage.setItem('habitUserName', legacyUserName);
+        }
 
-    const legacyUserEmail = sessionStorage.getItem('habitUserEmail');
-    const currentUserEmail = localStorage.getItem('habitUserEmail');
-    if (legacyUserEmail && !currentUserEmail) {
-        localStorage.setItem('habitUserEmail', legacyUserEmail);
-    }
+        const legacyUserEmail = sessionStorage.getItem('habitUserEmail');
+        const currentUserEmail = localStorage.getItem('habitUserEmail');
+        if (legacyUserEmail && !currentUserEmail) {
+            localStorage.setItem('habitUserEmail', legacyUserEmail);
+        }
 
-    const legacyUserAvatar = sessionStorage.getItem('habitUserAvatar');
-    const currentUserAvatar = localStorage.getItem('habitUserAvatar');
-    if (legacyUserAvatar && !currentUserAvatar) {
-        localStorage.setItem('habitUserAvatar', legacyUserAvatar);
-    }
-};
+        const legacyUserAvatar = sessionStorage.getItem('habitUserAvatar');
+        const currentUserAvatar = localStorage.getItem('habitUserAvatar');
+        if (legacyUserAvatar && !currentUserAvatar) {
+            localStorage.setItem('habitUserAvatar', legacyUserAvatar);
+        }
+    };
+}
 
-migrateAuthStorage();
+window.migrateAuthStorage();
 
 document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements
@@ -185,6 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             await fetchPlans();
+            customAlert(id ? 'Habit updated successfully!' : 'Habit saved successfully!', 'success');
             closeModal(habitModal);
         } catch (error) {
             console.error("Error saving habit plan:", error);
@@ -220,6 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             await fetchPlans();
+            customAlert(id ? 'Task updated successfully!' : 'Task saved successfully!', 'success');
             closeModal(taskModal);
         } catch (error) {
             console.error("Error saving task plan:", error);
@@ -411,7 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const payload = {
                         name: plan.title,
-                        type: plan.type === 'habit' ? 'DO - Habit' : 'DO - Task to Complete',
+                        type: 'DO - Task to Complete',
                         frequency: 'Daily', // Required by backend
                         priority: 'Medium',
                         isFuturePlan: false,

@@ -252,6 +252,7 @@ router.post("/logout", async (req, res) => {
         user.sessions = user.sessions.filter(s => s.token !== currentToken);
         await user.save();
 
+        res.clearCookie("habit_session", { path: "/" });
         res.json({ message: "Logged out successfully" });
     } catch (error) {
         res.status(500).json({ message: error.message });

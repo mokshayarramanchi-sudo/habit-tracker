@@ -1,41 +1,42 @@
-const migrateAuthStorage = () => {
-    const legacyToken = sessionStorage.getItem('habitToken');
-    const currentToken = localStorage.getItem('habitToken');
-    if (legacyToken && !currentToken) {
-        localStorage.setItem('habitToken', legacyToken);
-    }
+if (!window.migrateAuthStorage) {
+    window.migrateAuthStorage = () => {
+        const legacyToken = sessionStorage.getItem('habitToken');
+        const currentToken = localStorage.getItem('habitToken');
+        if (legacyToken && !currentToken) {
+            localStorage.setItem('habitToken', legacyToken);
+        }
 
-    const legacyUserName = sessionStorage.getItem('habitUserName');
-    const currentUserName = localStorage.getItem('habitUserName');
-    if (legacyUserName && !currentUserName) {
-        localStorage.setItem('habitUserName', legacyUserName);
-    }
+        const legacyUserName = sessionStorage.getItem('habitUserName');
+        const currentUserName = localStorage.getItem('habitUserName');
+        if (legacyUserName && !currentUserName) {
+            localStorage.setItem('habitUserName', legacyUserName);
+        }
 
-    const legacyUserEmail = sessionStorage.getItem('habitUserEmail');
-    const currentUserEmail = localStorage.getItem('habitUserEmail');
-    if (legacyUserEmail && !currentUserEmail) {
-        localStorage.setItem('habitUserEmail', legacyUserEmail);
-    }
+        const legacyUserEmail = sessionStorage.getItem('habitUserEmail');
+        const currentUserEmail = localStorage.getItem('habitUserEmail');
+        if (legacyUserEmail && !currentUserEmail) {
+            localStorage.setItem('habitUserEmail', legacyUserEmail);
+        }
 
-    const legacyUserAvatar = sessionStorage.getItem('habitUserAvatar');
-    const currentUserAvatar = localStorage.getItem('habitUserAvatar');
-    if (legacyUserAvatar && !currentUserAvatar) {
-        localStorage.setItem('habitUserAvatar', legacyUserAvatar);
-    }
-};
+        const legacyUserAvatar = sessionStorage.getItem('habitUserAvatar');
+        const currentUserAvatar = localStorage.getItem('habitUserAvatar');
+        if (legacyUserAvatar && !currentUserAvatar) {
+            localStorage.setItem('habitUserAvatar', legacyUserAvatar);
+        }
+    };
+}
 
-migrateAuthStorage();
+window.migrateAuthStorage();
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Simple tab switching logic for profile
+const initializeProfile = () => {
     const tabBtns = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
-    
+
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             tabBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
+
             const targetId = btn.getAttribute('data-tab');
             if (targetId) {
                 tabContents.forEach(content => {
@@ -392,22 +393,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnLogout = document.getElementById('logoutAccountBtn');
     if (btnLogout) {
         btnLogout.addEventListener('click', () => {
-            customConfirm('Are you sure you want to log out?', async (confirmed) => {
-                if (confirmed) {
-                    const token = localStorage.getItem('habitToken');
-                    if (token) {
-                        try {
-                            await fetch('/api/users/logout', {
-                                method: 'POST',
-                                headers: { 'Authorization': `Bearer ${token}` }
-                            });
-                        } catch (err) {}
-                    }
-                    localStorage.removeItem('habitToken');
-                    localStorage.removeItem('habitUserName');
-                    localStorage.removeItem('habitUserEmail');
-                    window.location.href = '/signin';
+            customConfirm('Are you sure you want to log out?', (confirmed) => {
+                if (!confirmed) return;
+
+                const token = localStorage.getItem('habitToken');
+                if (token) {
+                    fetch('/api/users/logout', {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` },
+                        credentials: 'include'
+                    }).catch(() => {});
                 }
+
+                localStorage.clear();
+                sessionStorage.clear();
+                window.location.href = '/signin';
             });
         });
     }
@@ -562,4 +562,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     fetchProfileData();
     loadSessions();
-});
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeProfile);
+} else {
+    initializeProfile();
+}

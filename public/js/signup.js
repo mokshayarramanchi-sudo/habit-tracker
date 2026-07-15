@@ -1,9 +1,19 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
   const btnSignInLink = document.getElementById('btnSignInLink');
   const signupForm = document.getElementById('signup-form');
   const passwordError = document.getElementById('password-error-signup');
   const toggleButtons = document.querySelectorAll('.password-toggle-btn');
   const apiBase = '/api/auth';
+
+  try {
+    const response = await fetch(`${apiBase}/me`, { credentials: 'include' });
+    if (response.ok) {
+      window.location.href = '/home';
+      return;
+    }
+  } catch (error) {
+    console.debug('No active session detected on signup page.', error);
+  }
 
   if (btnSignInLink) {
     btnSignInLink.addEventListener('click', function () {
@@ -55,6 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
           headers: {
             'Content-Type': 'application/json',
           },
+          credentials: 'include',
           body: JSON.stringify({ fullName, email, password }),
         });
 

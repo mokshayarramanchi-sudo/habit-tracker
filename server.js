@@ -1,17 +1,23 @@
 global.crypto = require('crypto');
 
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, ".env") });
 
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const path = require("path");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+
+const User = require("./models/User");
 
 const app = express();
 
-app.use(cors());
+app.set("trust proxy", 1);
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true, limit: '5mb' }));
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 const authRoutes = require("./routes/authRoutes");
@@ -36,10 +42,34 @@ app.use("/api/future-plans", futurePlanRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/notifications", notificationRoutes);
 
+const redirectIfAuthenticated = async (req, res, next) => {
+  const token = req.cookies?.habit_session;
+
+  if (!token) {
+    return next();
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findOne({
+      _id: decoded.userId,
+      "sessions.token": token
+    }).select("_id");
+
+    if (user) {
+      return res.redirect("/home");
+    }
+  } catch (error) {
+    // Ignore invalid cookies and continue to the requested page.
+  }
+
+  return next();
+};
+
 const pages = [
-  'home', 'tasks', 'analytics', 'task-analytics', 'diary', 
-  'future-plans', 'about', 'profile', 'signin', 'signup', 
-  'forgot', 'verify-otp', 'reset-password', 'main'
+  'tasks', 'analytics', 'task-analytics', 'diary', 
+  'future-plans', 'about', 'profile',
+  'forgot', 'verify-otp', 'reset-password'
 ];
 
 pages.forEach(page => {
@@ -48,8 +78,24 @@ pages.forEach(page => {
   });
 });
 
-app.get('/', (req, res) => {
+app.get('/home', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/html/home.html'));
+});
+
+app.get('/', redirectIfAuthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, 'public/html/main.html'));
+});
+
+app.get('/main', redirectIfAuthenticated, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/html/main.html'));
+});
+
+app.get('/signin', redirectIfAuthenticated, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/html/signin.html'));
+});
+
+app.get('/signup', redirectIfAuthenticated, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/html/signup.html'));
 });
 
 mongoose.connect(process.env.MONGO_URI)
