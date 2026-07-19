@@ -19,12 +19,22 @@ const sendPushToUser = async (userId, payload) => {
         const user = await User.findById(userId);
         if (!user || !user.pushSubscriptions || user.pushSubscriptions.length === 0) return;
 
-        const promises = user.pushSubscriptions.map(sub =>
+        // Deduplicate subscriptions by endpoint to prevent multiple notifications
+        const uniqueSubs = [];
+        const seenEndpoints = new Set();
+        for (const sub of user.pushSubscriptions) {
+            if (!seenEndpoints.has(sub.endpoint)) {
+                seenEndpoints.add(sub.endpoint);
+                uniqueSubs.push(sub);
+            }
+        }
+
+        const promises = uniqueSubs.map(sub =>
             webPush.sendNotification(sub, JSON.stringify(payload)).catch(err => {
                 if (err.statusCode === 410 || err.statusCode === 404) {
                     // Subscription has expired or is no longer valid
                     return User.findByIdAndUpdate(userId, {
-                        $pull: { pushSubscriptions: sub }
+                        $pull: { pushSubscriptions: { endpoint: sub.endpoint } }
                     });
                 }
                 console.error("Push Error:", err);

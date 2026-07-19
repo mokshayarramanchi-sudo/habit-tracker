@@ -19,10 +19,14 @@ router.get("/vapid-public-key", (req, res) => {
 router.post("/subscribe", async (req, res) => {
     try {
         const subscription = req.body;
+        const user = await User.findById(req.user.userId);
         
-        await User.findByIdAndUpdate(req.user.userId, {
-            $addToSet: { pushSubscriptions: subscription }
-        });
+        // Prevent duplicate subscriptions from the same device
+        const exists = user.pushSubscriptions.some(sub => sub.endpoint === subscription.endpoint);
+        if (!exists) {
+            user.pushSubscriptions.push(subscription);
+            await user.save();
+        }
 
         res.status(201).json({});
     } catch (error) {

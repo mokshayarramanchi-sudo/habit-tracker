@@ -22,3 +22,9 @@ self.addEventListener('notificationclick', function(event) {
         clients.openWindow(event.notification.data.url)
     );
 });
+
+// Required for Chrome to recognize the app as an installable PWA
+self.addEventListener('fetch', function(event) {
+    // Just pass the request through to the network
+    event.respondWith(fetch(event.request));
+});
