@@ -229,43 +229,43 @@ document.addEventListener('DOMContentLoaded', async () => {
             streakEl.textContent = `${streak} Day${streak !== 1 ? 's' : ''}`;
         }
 
-        const moodEl = document.getElementById('average-mood');
-        if (moodEl) {
-            if (userEntries.length === 0) {
-                moodEl.textContent = 'None';
-            } else {
-                const moodScores = {
-                    '😄': 5,
-                    '🙂': 4,
-                    '😐': 3,
-                    '😔': 2,
-                    '😫': 1,
-                    '📝': 3
-                };
-                let totalScore = 0;
-                let validCount = 0;
+        const lastEntryEl = document.getElementById('last-entry-date');
+        if (lastEntryEl) {
+            if (userEntries.length > 0) {
+                // Sort by date descending
+                const latestEntry = userEntries.slice().sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+                const entryD = new Date(latestEntry.date);
+                entryD.setHours(0, 0, 0, 0);
                 
-                userEntries.forEach(entry => {
-                    if (moodScores[entry.moodIcon]) {
-                        totalScore += moodScores[entry.moodIcon];
-                        validCount++;
-                    }
-                });
-
-                if (validCount > 0) {
-                    const avg = Math.round(totalScore / validCount);
-                    const reverseMood = {
-                        5: '😄',
-                        4: '🙂',
-                        3: '😐',
-                        2: '😔',
-                        1: '😫'
-                    };
-                    moodEl.textContent = reverseMood[avg] || '😐';
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                const diffTime = Math.abs(today - entryD);
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                
+                if (diffDays === 0) {
+                    lastEntryEl.textContent = 'Today';
+                } else if (diffDays === 1) {
+                    lastEntryEl.textContent = 'Yesterday';
+                } else if (diffDays < 7) {
+                    lastEntryEl.textContent = `${diffDays} days ago`;
                 } else {
-                    moodEl.textContent = 'None';
+                    lastEntryEl.textContent = entryD.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                 }
+            } else {
+                lastEntryEl.textContent = 'None';
             }
+        }
+
+        const entriesMonthEl = document.getElementById('entries-this-month');
+        if (entriesMonthEl) {
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+            const monthEntries = userEntries.filter(e => {
+                const d = new Date(e.date);
+                return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+            });
+            entriesMonthEl.textContent = monthEntries.length;
         }
     }
 

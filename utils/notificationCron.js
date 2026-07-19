@@ -152,10 +152,10 @@ const runNotificationChecks = async () => {
                 }
             }
 
-            // 3. Check for Future Tasks whose date and time is within 1 hour
+            // 3. Check for Future Tasks whose date and time is within 1 hour or exact time
             const plannedTasks = await FuturePlan.find({ userId, type: 'task' });
 
-            const isTimeForNotification = (taskTimeStr, currentTimeStr) => {
+            const isTimeForNotification = (taskTimeStr, currentTimeStr, offsetMins) => {
                 const [tH, tM] = taskTimeStr.split(':').map(Number);
                 const [cH, cM] = currentTimeStr.split(':').map(Number);
                 const taskMins = tH * 60 + tM;
@@ -166,12 +166,13 @@ const runNotificationChecks = async () => {
                     currentMins -= 1440;
                 }
 
-                return currentMins === (taskMins - 60); // Trigger exactly 60 mins before
+                return currentMins === (taskMins - offsetMins); 
             };
 
             for (const task of plannedTasks) {
                 if (task.date && task.time && task.date === todayStr) {
-                    if (isTimeForNotification(task.time, currentTime)) {
+                    // Check for 60 mins before
+                    if (isTimeForNotification(task.time, currentTime, 60)) {
                         const identifier = `task-due-${task._id}`;
                         const exists = await Notification.findOne({ userId, identifier });
                         if (!exists) {
@@ -179,6 +180,23 @@ const runNotificationChecks = async () => {
                                 userId,
                                 title: "Task Due Soon",
                                 message: `Your planned task is due soon: ${task.title} at ${task.time}!`,
+                                type: "task",
+                                relatedId: task._id,
+                                identifier
+                            });
+                            await sendPushToUser(userId, { title: notif.title, body: notif.message, url: "/future-plans" });
+                        }
+                    }
+                    
+                    // Check for exact time
+                    if (isTimeForNotification(task.time, currentTime, 0)) {
+                        const identifier = `task-now-${task._id}`;
+                        const exists = await Notification.findOne({ userId, identifier });
+                        if (!exists) {
+                            const notif = await Notification.create({
+                                userId,
+                                title: "Task Time",
+                                message: `You should start doing your task right now: ${task.title}!`,
                                 type: "task",
                                 relatedId: task._id,
                                 identifier

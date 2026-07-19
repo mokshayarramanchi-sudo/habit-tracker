@@ -1,6 +1,6 @@
 {
-  "name": "Habit Tracker PWA",
-  "short_name": "Habits",
+  "name": "Habit Tracker",
+  "short_name": "Habit Tracker",
   "start_url": "/home",
   "display": "standalone",
   "background_color": "#ffffff",
