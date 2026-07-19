@@ -5,8 +5,30 @@ const DailyProgress = require("../models/DailyProgress");
 const FuturePlan = require("../models/FuturePlan");
 const authMiddleware = require("../middleware/authMiddleware");
 
+const User = require("../models/User");
+
 // Protect routes
 router.use(authMiddleware);
+
+// Get VAPID public key for web push
+router.get("/vapid-public-key", (req, res) => {
+    res.json({ publicKey: process.env.VAPID_PUBLIC_KEY });
+});
+
+// Subscribe to push notifications
+router.post("/subscribe", async (req, res) => {
+    try {
+        const subscription = req.body;
+        
+        await User.findByIdAndUpdate(req.user.userId, {
+            $addToSet: { pushSubscriptions: subscription }
+        });
+
+        res.status(201).json({});
+    } catch (error) {
+        res.status(500).json({ message: "Failed to subscribe" });
+    }
+});
 
 router.get("/", async (req, res) => {
     try {
