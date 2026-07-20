@@ -30,6 +30,7 @@ const futurePlanRoutes = require("./routes/futurePlanRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
 const dailyProgressRoutes = require("./routes/dailyProgressRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const chatRoutes = require("./routes/chatRoutes");
 
 app.use("/api/auth", auth);
 app.use("/api/auth", authRoutes);
@@ -41,6 +42,7 @@ app.use("/api/diary", diaryRoutes);
 app.use("/api/future-plans", futurePlanRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/chat", chatRoutes);
 
 const redirectIfAuthenticated = async (req, res, next) => {
   const token = req.cookies?.habit_session;
@@ -69,7 +71,7 @@ const redirectIfAuthenticated = async (req, res, next) => {
 const pages = [
   'tasks', 'analytics', 'task-analytics', 'diary', 
   'future-plans', 'about', 'profile',
-  'forgot', 'verify-otp', 'reset-password'
+  'forgot', 'verify-otp', 'reset-password', 'ai-coach'
 ];
 
 pages.forEach(page => {
