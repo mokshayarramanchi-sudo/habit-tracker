@@ -161,6 +161,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Form Submissions
     habitForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        const submitBtn = habitForm.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        const originalText = submitBtn.textContent;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="margin-right: 5px;"></i>Saving...';
+
         const id = document.getElementById('habit-id').value;
         const habitData = {
             title: document.getElementById('habit-name').value,
@@ -192,11 +197,19 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error("Error saving habit plan:", error);
             customAlert("Error saving habit plan: " + error.message, 'error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
         }
     });
 
     taskForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        const submitBtn = taskForm.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        const originalText = submitBtn.textContent;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="margin-right: 5px;"></i>Saving...';
+
         const id = document.getElementById('task-id').value;
         const taskData = {
             title: document.getElementById('task-title').value,
@@ -228,6 +241,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error("Error saving task plan:", error);
             customAlert("Error saving task plan: " + error.message, 'error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
         }
     });
 

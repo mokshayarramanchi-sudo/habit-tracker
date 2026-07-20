@@ -73,12 +73,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 userEntries = data.map(entry => ({
                     id: entry._id,
                     date: new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                    originalDate: entry.date,
                     moodIcon: entry.moodIcon || '📝',
                     title: entry.title || 'Untitled Entry',
                     preview: entry.content
                 }));
                 renderRecentEntries(userEntries);
                 updateTotalEntries();
+                renderCalendar();
             }
         } catch (error) {
             console.error("Error fetching diary entries:", error);
@@ -269,8 +271,191 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    // --- 3.5 Calendar View Initialization ---
+    let currentDateObj = new Date();
+    let currentMonth = currentDateObj.getMonth();
+    let currentYear = currentDateObj.getFullYear();
+
     // Initial Fetch
     await fetchEntries();
+    
+    function renderCalendar() {
+        const monthYearHeader = document.getElementById('calendar-month-year');
+        const calendarGrid = document.getElementById('calendar-grid');
+        if (!monthYearHeader || !calendarGrid) return;
+        
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        monthYearHeader.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+        
+        calendarGrid.innerHTML = '';
+        
+        const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        
+        // Add empty slots
+        for (let i = 0; i < firstDay; i++) {
+            const emptyDiv = document.createElement('div');
+            emptyDiv.className = 'calendar-day empty';
+            calendarGrid.appendChild(emptyDiv);
+        }
+        
+        const entriesByDate = {};
+        userEntries.forEach(e => {
+            const d = new Date(e.originalDate || e.date);
+            const dateStr = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+            if (!entriesByDate[dateStr]) entriesByDate[dateStr] = [];
+            entriesByDate[dateStr].push(e);
+        });
+        
+        const today = new Date();
+        const isCurrentMonth = today.getMonth() === currentMonth && today.getFullYear() === currentYear;
+        
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayDiv = document.createElement('div');
+            dayDiv.className = 'calendar-day';
+            
+            const numSpan = document.createElement('div');
+            numSpan.className = 'day-number';
+            numSpan.textContent = day;
+            dayDiv.appendChild(numSpan);
+            
+            const dateStr = `${currentYear}-${currentMonth}-${day}`;
+            const dayEntries = entriesByDate[dateStr] || [];
+            
+            const statSpan = document.createElement('div');
+            statSpan.className = 'day-stats';
+            
+            if (dayEntries.length > 0) {
+                if (dayEntries.length >= 2) {
+                    dayDiv.classList.add('prod-high');
+                } else {
+                    dayDiv.classList.add('prod-medium');
+                }
+                statSpan.textContent = `${dayEntries.length} Entry${dayEntries.length > 1 ? 's' : ''}`;
+            } else {
+                dayDiv.classList.add('prod-none');
+                statSpan.textContent = '0 Entries';
+            }
+            dayDiv.appendChild(statSpan);
+            
+            if (isCurrentMonth && day === today.getDate()) {
+                dayDiv.style.border = '2px solid var(--primary)';
+            }
+            
+            dayDiv.addEventListener('click', () => {
+                showDayDetails(currentYear, currentMonth, day, dayEntries);
+                filterEntriesByDate(currentYear, currentMonth, day);
+            });
+            
+            calendarGrid.appendChild(dayDiv);
+        }
+    }
+    
+    document.getElementById('prev-month')?.addEventListener('click', () => {
+        currentMonth--;
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        }
+        renderCalendar();
+    });
+    
+    document.getElementById('next-month')?.addEventListener('click', () => {
+        currentMonth++;
+        if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
+        renderCalendar();
+    });
+    
+    function filterEntriesByDate(year, month, day) {
+        const filtered = userEntries.filter(e => {
+            const d = new Date(e.originalDate || e.date);
+            return d.getFullYear() === year && d.getMonth() === month && d.getDate() === day;
+        });
+        
+        renderRecentEntries(filtered);
+        
+        const sectionHeader = document.querySelector('.recent-entries-card h2');
+        if (sectionHeader) {
+            sectionHeader.innerHTML = `Entries for ${new Date(year, month, day).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+            
+            let viewAllBtn = document.getElementById('view-all-entries-btn');
+            if (!viewAllBtn) {
+                viewAllBtn = document.createElement('button');
+                viewAllBtn.id = 'view-all-entries-btn';
+                viewAllBtn.className = 'btn-secondary';
+                viewAllBtn.style = 'margin-left: 12px; font-size: 0.8rem; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border-color); cursor: pointer; background: var(--bg-main); color: var(--text-main);';
+                viewAllBtn.textContent = 'View All';
+                viewAllBtn.addEventListener('click', () => {
+                    renderRecentEntries(userEntries);
+                    sectionHeader.innerHTML = 'Recent Entries';
+                    viewAllBtn.remove();
+                });
+                sectionHeader.appendChild(viewAllBtn);
+            }
+        }
+    }
+
+    function showDayDetails(year, month, day, dayEntries) {
+        const dateStr = new Date(year, month, day).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+        document.getElementById("modalDateTitle").textContent = dateStr;
+        
+        const modalBody = document.getElementById("modalDiaryEntries");
+        modalBody.innerHTML = '';
+        
+        if (dayEntries.length === 0) {
+            modalBody.innerHTML = '<p style="text-align: center; color: var(--text-muted); border: none;">No entries for this date.</p>';
+        } else {
+            const entriesList = document.createElement('div');
+            entriesList.style.display = 'flex';
+            entriesList.style.flexDirection = 'column';
+            entriesList.style.gap = '10px';
+            
+            dayEntries.forEach(entry => {
+                const entryDiv = document.createElement('div');
+                entryDiv.style.padding = '12px';
+                entryDiv.style.background = 'var(--bg-main)';
+                entryDiv.style.borderRadius = '8px';
+                entryDiv.style.border = '1px solid var(--border-color)';
+                
+                entryDiv.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <strong style="color: var(--text-main); font-size: 1.1rem;">${entry.title}</strong>
+                        <span style="font-size: 1.2rem;">${entry.moodIcon}</span>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0; border: none; padding: 0; line-height: 1.4;">${entry.preview}</p>
+                    <div style="margin-top: 10px; display: flex; gap: 8px;">
+                        <button class="btn-edit-modal" data-id="${entry.id}" style="padding: 4px 8px; background: none; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; color: #555;"><i class="fa-solid fa-pen"></i> Edit</button>
+                        <button class="btn-delete-modal" data-id="${entry.id}" style="padding: 4px 8px; background: none; border: 1px solid #ff6b6b; border-radius: 4px; cursor: pointer; color: #ff6b6b;"><i class="fa-solid fa-trash"></i> Delete</button>
+                    </div>
+                `;
+                entriesList.appendChild(entryDiv);
+            });
+            modalBody.appendChild(entriesList);
+
+            modalBody.querySelectorAll('.btn-edit-modal').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.getElementById("dayDetailModal").classList.remove("active");
+                    handleEditEntry(e);
+                });
+            });
+
+            modalBody.querySelectorAll('.btn-delete-modal').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.getElementById("dayDetailModal").classList.remove("active");
+                    handleDeleteEntry(e);
+                });
+            });
+        }
+        
+        document.getElementById("dayDetailModal").classList.add("active");
+    }
+    
+    document.querySelector(".close-modal")?.addEventListener("click", () => {
+        document.getElementById("dayDetailModal").classList.remove("active");
+    });
 
     // --- 4. Save Entry ---
     const saveBtn = document.getElementById('save-entry-btn');

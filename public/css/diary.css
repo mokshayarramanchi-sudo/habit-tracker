@@ -19,6 +19,161 @@
     gap: 24px;
 }
 
+/* Calendar View */
+.calendar-card {
+    margin-bottom: 30px;
+}
+
+.calendar-header-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 25px;
+    gap: 15px;
+}
+
+.calendar-nav-btn {
+    background: var(--hover-bg);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.calendar-nav-btn:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.calendar-days-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    width: 100%;
+    text-align: center;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 15px;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    width: 100%;
+}
+
+.calendar-day {
+    min-height: 65px;
+    border-radius: 12px;
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    padding: 10px 5px;
+    box-sizing: border-box;
+}
+
+.calendar-day:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--glass-shadow);
+}
+
+.calendar-day.empty {
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: default;
+}
+
+.calendar-day.empty:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.calendar-month-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-main);
+    text-align: center;
+    margin: 0;
+    min-width: 200px;
+}
+
+.day-number {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-main);
+    line-height: 1;
+    margin: 0;
+}
+
+.prod-high {
+    border-color: #2ecc71;
+    background: rgba(46, 204, 113, 0.1);
+}
+.prod-high .day-number { color: #2ecc71; }
+
+.prod-medium {
+    border-color: #f39c12;
+    background: rgba(243, 156, 18, 0.1);
+}
+.prod-medium .day-number { color: #f39c12; }
+
+.prod-low {
+    border-color: #e74c3c;
+    background: rgba(231, 76, 60, 0.1);
+}
+.prod-low .day-number { color: #e74c3c; }
+
+.prod-none {
+    opacity: 0.5;
+}
+
+.day-stats {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 8px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+/* Responsive for Calendar */
+@media (max-width: 768px) {
+    .calendar-month-title {
+        font-size: 18px;
+        min-width: 150px;
+    }
+
+    .calendar-day {
+        padding: 5px 2px;
+        min-height: 45px;
+    }
+
+    .day-number {
+        font-size: 14px;
+    }
+
+    .calendar-days-header {
+        font-size: 12px;
+        gap: 5px;
+    }
+    
+    .calendar-grid {
+        gap: 5px;
+    }
+}
+
 /* Forms */
 .form-input, .form-textarea {
     width: 100%;
@@ -189,6 +344,61 @@
 
 .diary-form textarea {
     flex: 1;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--bg-card, var(--bg-main));
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    border: 1px solid var(--border-color);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h2 {
+    color: var(--text-main);
+}
+
+.close-modal {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--text-muted);
+}
+
+.modal-body {
+    max-height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.modal-body p {
+    color: var(--text-main);
 }
 
 /* Mobile Responsiveness for Diary */

@@ -318,6 +318,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const minDays = (frequency === 'Weekly' || frequency === 'Monthly') ? (minDaysInput.value.trim() || '') : '';
         const payload = { name, type, frequency, timeTracking, timeValue, minDays, active };
 
+        submitBtn.disabled = true;
+        const originalText = submitBtn.textContent;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="margin-right: 5px;"></i>Saving...';
+
         try {
             if (editTaskId) {
                 await updateTask(editTaskId, payload);
@@ -332,6 +336,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error(error);
             customAlert('An error occurred while saving the task.', 'error');
+            submitBtn.textContent = originalText;
+        } finally {
+            submitBtn.disabled = false;
         }
     });
 
