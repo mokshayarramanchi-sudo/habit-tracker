@@ -169,7 +169,7 @@
                     <option value="Medium">Medium</option>
                     <option value="Low">Low</option>
                 </select>
-                <input type="date" class="filter-select" id="filter-date">
+                <input type="text" placeholder="Filter by date..." onfocus="(this.type='date')" onblur="(this.value ? this.type='date' : this.type='text')" class="filter-select" id="filter-date">
                 
                 <div class="action-buttons">
                     <button class="btn-primary" id="add-planned-habit-btn"><i class="fa-solid fa-plus"></i> Habit</button>

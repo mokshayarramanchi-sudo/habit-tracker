@@ -48,17 +48,18 @@ router.post("/", authMiddleware, chatLimiter, async (req, res) => {
         const userId = req.user.userId || req.user.id;
         
         // 1. Fetch Active Tasks
-        const activeTasks = await Task.find({ user: userId, active: true })
-            .select('-_id name type frequency priority');
+        const activeTasks = await Task.find({ userId: userId, active: true })
+            .select('-_id name type frequency');
         
         // 2. Fetch Recent Progress (last 3 days)
-        const recentProgress = await DailyProgress.find({ user: userId })
-            .sort({ date: -1 })
-            .limit(3)
-            .select('-_id date completedTasks missedTasks skippedTasks completionPercentage');
+        const recentProgress = await DailyProgress.find({ userId: userId })
+            .sort({ dateString: -1 })
+            .limit(10)
+            .select('-_id dateString status taskId')
+            .populate('taskId', 'name type -_id');
             
         // 3. Fetch Recent Diary Entries (last 2)
-        const recentDiary = await Diary.find({ user: userId })
+        const recentDiary = await Diary.find({ userId: userId })
             .sort({ date: -1 })
             .limit(2)
             .select('-_id date moodIcon title content');
