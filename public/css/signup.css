@@ -285,10 +285,13 @@ body::after {
 @media (max-width: 640px) {
     .header {
         padding: 16px 5%;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: center;
     }
 
     .navbar {
-        display: none;
+        gap: 15px;
     }
 
     .auth-page {

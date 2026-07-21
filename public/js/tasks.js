@@ -71,35 +71,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
         taskList.innerHTML = tasks.map((task, index) => {
             const taskId = task._id || task.id || index;
-            const timeText = task.timeTracking ? `<span class="task-badge">Estimated ${escapeHtml(task.timeValue)} min</span>` : '';
+            const timeText = task.timeTracking ? `<span class="task-badge"><i class="fa-regular fa-clock"></i> ${escapeHtml(task.timeValue)}m</span>` : '';
             const activeClass = task.active === false ? 'inactive' : '';
             const eyeIcon = task.active === false ? 'fa-eye-slash' : 'fa-eye';
-            const minDaysText = task.minDays ? `<span class="task-badge">Min ${escapeHtml(task.minDays)} days/${task.frequency === 'Weekly' ? 'week' : 'month'}</span>` : '';
+            const minDaysText = task.minDays ? `<span class="task-badge"><i class="fa-regular fa-calendar-check"></i> ${escapeHtml(task.minDays)}d/${task.frequency === 'Weekly' ? 'wk' : 'mo'}</span>` : '';
+            
+            const shortType = escapeHtml(task.type).split('-')[0].trim();
+            const shortFreq = escapeHtml(task.frequency).substring(0, 3).toUpperCase();
+            
             return `
                     <article class="task-item ${activeClass}" data-id="${escapeHtml(taskId)}">
                         <div class="task-info">
                             <div class="task-title-row">
                                 <h3>${escapeHtml(task.name)}</h3>
+                                <div class="task-actions">
+                                    <button type="button" class="task-action toggle-btn" data-id="${escapeHtml(taskId)}" aria-label="Toggle Active">
+                                        <i class="fa-solid ${eyeIcon}"></i>
+                                    </button>
+                                    <button type="button" class="task-action edit-btn" data-id="${escapeHtml(taskId)}" aria-label="Edit Task">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </button>
+                                    <button type="button" class="task-action delete-btn" data-id="${escapeHtml(taskId)}" aria-label="Delete Task">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="task-meta">
-                                <span class="task-badge">${escapeHtml(task.type)}</span>
-                                <span class="task-badge">${escapeHtml(task.frequency)}</span>
-                            </div>
-                            <div class="task-meta">
+                                <span class="task-badge">${shortType}</span>
+                                <span class="task-badge">${shortFreq}</span>
                                 ${timeText}
                                 ${minDaysText}
                             </div>
-                        </div>
-                        <div class="task-actions">
-                            <button type="button" class="task-action toggle-btn" data-id="${escapeHtml(taskId)}" aria-label="Toggle Active">
-                                <i class="fa-solid ${eyeIcon}"></i>
-                            </button>
-                            <button type="button" class="task-action edit-btn" data-id="${escapeHtml(taskId)}" aria-label="Edit Task">
-                                <i class="fa-solid fa-pen"></i>
-                            </button>
-                            <button type="button" class="task-action delete-btn" data-id="${escapeHtml(taskId)}" aria-label="Delete Task">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
                         </div>
                     </article>
                 `;

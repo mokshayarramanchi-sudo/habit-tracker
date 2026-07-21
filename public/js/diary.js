@@ -331,10 +331,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 } else {
                     dayDiv.classList.add('prod-medium');
                 }
-                statSpan.textContent = `${dayEntries.length} Entry${dayEntries.length > 1 ? 's' : ''}`;
+                statSpan.textContent = `${dayEntries.length}`;
             } else {
                 dayDiv.classList.add('prod-none');
-                statSpan.textContent = '0 Entries';
+                statSpan.textContent = '0';
             }
             dayDiv.appendChild(statSpan);
             

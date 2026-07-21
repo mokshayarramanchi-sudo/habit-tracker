@@ -951,21 +951,24 @@ body::after{
 
 @media (max-width: 768px) {
     .header {
-        flex-direction: row;
-        gap: 10px;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
         padding: 15px 5%;
     }
 
     .logo {
-        font-size: 18px;
+        font-size: 20px;
     }
     
     .logo i {
-        font-size: 20px;
+        font-size: 24px;
     }
 
     .navbar {
-        display: none; /* Hide navbar links on mobile */
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
     }
 
     .auth-buttons {

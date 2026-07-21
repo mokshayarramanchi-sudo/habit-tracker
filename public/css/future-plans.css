@@ -26,20 +26,34 @@
     margin-left: auto;
 }
 
-.plans-grid {
+.plans-grid, .task-list {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 10px;
+    max-height: 350px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.plans-grid::-webkit-scrollbar, .task-list::-webkit-scrollbar {
+    width: 6px;
+}
+.plans-grid::-webkit-scrollbar-track, .task-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+.plans-grid::-webkit-scrollbar-thumb, .task-list::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 10px;
 }
 
 .plan-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 20px;
+    border-radius: 12px;
+    padding: 12px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 6px;
     transition: transform 0.2s, box-shadow 0.2s;
     position: relative;
 }
@@ -53,25 +67,25 @@
 .plan-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
 }
 
 .plan-title {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     font-weight: 600;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
 }
 
 .plan-badges {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: wrap;
 }
 
 .badge-item {
-    font-size: 0.75rem;
-    padding: 4px 10px;
-    border-radius: 10px;
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 6px;
     font-weight: 600;
 }
 
@@ -84,18 +98,18 @@
 .badge-planned { background: rgba(107, 114, 128, 0.15); color: var(--text-muted); border: 1px dashed var(--text-muted); }
 
 .plan-details {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--text-muted);
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 2px;
 }
 
 .plan-actions {
     display: flex;
-    gap: 10px;
-    margin-top: 10px;
-    padding-top: 15px;
+    gap: 6px;
+    margin-top: 6px;
+    padding-top: 8px;
     border-top: 1px solid var(--border-color);
 }
 
@@ -103,11 +117,11 @@
     background: rgba(0, 226, 145, 0.15);
     color: var(--success);
     border: none;
-    padding: 8px 15px;
-    border-radius: 12px;
+    padding: 4px 10px;
+    border-radius: 6px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     flex: 1;
     transition: all 0.2s;
 }
@@ -121,14 +135,15 @@
     background: var(--bg-main);
     color: var(--text-muted);
     border: 1px solid var(--border-color);
-    width: 35px;
-    height: 35px;
-    border-radius: 10px;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s;
+    font-size: 0.75rem;
 }
 
 .btn-icon:hover {
@@ -295,10 +310,11 @@
     background-color: #95a5a6; /* Cement color */
     color: white;
     border: none;
-    padding: 8px 15px;
-    border-radius: 8px;
+    padding: 4px 10px;
+    border-radius: 6px;
     cursor: pointer;
     font-weight: 600;
+    font-size: 0.75rem;
     font-family: 'Inter', sans-serif;
     transition: all 0.2s ease;
     display: inline-flex;
