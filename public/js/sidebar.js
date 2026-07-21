@@ -47,9 +47,18 @@ const initializeSidebar = () => {
             link.classList.add('active');
         }
 
-        link.addEventListener('click', function() {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
             navLinks.forEach(l => l.classList.remove('active'));
             this.classList.add('active');
+            
+            document.body.style.transition = 'opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
+            document.body.style.opacity = '0';
+            document.body.style.transform = 'translateY(8px)';
+            
+            setTimeout(() => {
+                window.location.href = href;
+            }, 200);
         });
     });
 

@@ -56,6 +56,18 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     transition: background-color var(--transition-speed);
+    animation: pageFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes pageFadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(8px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
 }
 
 body::before {
