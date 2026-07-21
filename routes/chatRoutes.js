@@ -7,8 +7,15 @@ const Task = require("../models/Task");
 const DailyProgress = require("../models/DailyProgress");
 const Diary = require("../models/Diary");
 
-// Initialize Groq AI
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+// Initialize Groq AI if key is present
+let groq = null;
+if (process.env.GROQ_API_KEY) {
+    try {
+        groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+    } catch (e) {
+        console.warn("Failed to initialize Groq:", e.message);
+    }
+}
 
 // Rate limiting: Max 15 messages per 1 minute per IP
 const chatLimiter = rateLimit({
@@ -19,7 +26,7 @@ const chatLimiter = rateLimit({
 
 router.post("/", authMiddleware, chatLimiter, async (req, res) => {
     try {
-        if (!process.env.GROQ_API_KEY) {
+        if (!process.env.GROQ_API_KEY || !groq) {
             return res.status(500).json({ message: "Groq API key is missing from environment variables." });
         }
 
