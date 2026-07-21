@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
         if (data.user && data.user.avatarBase64) {
           localStorage.setItem('habitUserAvatar', data.user.avatarBase64);
-          localStorage.setItem('habitUserAvatar', data.user.avatarBase64);
+          sessionStorage.setItem('habitUserAvatar', data.user.avatarBase64);
         }
 
         window.location.href = '/home';

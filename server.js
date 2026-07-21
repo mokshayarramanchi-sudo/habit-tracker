@@ -68,20 +68,48 @@ const redirectIfAuthenticated = async (req, res, next) => {
   return next();
 };
 
-const pages = [
+const requireAuth = async (req, res, next) => {
+  const token = req.cookies?.habit_session;
+
+  if (!token) {
+    return res.redirect("/signin");
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findOne({
+      _id: decoded.userId,
+      "sessions.token": token
+    }).select("_id");
+
+    if (!user) {
+      return res.redirect("/signin");
+    }
+    return next();
+  } catch (error) {
+    return res.redirect("/signin");
+  }
+};
+
+const protectedPages = [
   'tasks', 'analytics', 'task-analytics', 'diary', 
-  'future-plans', 'about', 'profile',
-  'forgot', 'verify-otp', 'reset-password', 'ai-coach'
+  'future-plans', 'about', 'profile', 'ai-coach', 'home'
 ];
 
-pages.forEach(page => {
-  app.get(`/${page}`, (req, res) => {
+const publicPages = [
+  'forgot', 'verify-otp', 'reset-password'
+];
+
+protectedPages.forEach(page => {
+  app.get(`/${page}`, requireAuth, (req, res) => {
     res.sendFile(path.join(__dirname, `public/html/${page}.html`));
   });
 });
 
-app.get('/home', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public/html/home.html'));
+publicPages.forEach(page => {
+  app.get(`/${page}`, (req, res) => {
+    res.sendFile(path.join(__dirname, `public/html/${page}.html`));
+  });
 });
 
 app.get('/', redirectIfAuthenticated, (req, res) => {

@@ -7,15 +7,18 @@ const Task = require("../models/Task");
 const DailyProgress = require("../models/DailyProgress");
 const Diary = require("../models/Diary");
 
-// Initialize Groq AI if key is present
+// Lazy initialization of Groq AI
 let groq = null;
-if (process.env.GROQ_API_KEY) {
-    try {
-        groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-    } catch (e) {
-        console.warn("Failed to initialize Groq:", e.message);
+const getGroqClient = () => {
+    if (!groq && process.env.GROQ_API_KEY) {
+        try {
+            groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+        } catch (e) {
+            console.warn("Failed to initialize Groq:", e.message);
+        }
     }
-}
+    return groq;
+};
 
 // Rate limiting: Max 15 messages per 1 minute per IP
 const chatLimiter = rateLimit({
@@ -26,8 +29,13 @@ const chatLimiter = rateLimit({
 
 router.post("/", authMiddleware, chatLimiter, async (req, res) => {
     try {
-        if (!process.env.GROQ_API_KEY || !groq) {
-            return res.status(500).json({ message: "Groq API key is missing from environment variables." });
+        if (!process.env.GROQ_API_KEY) {
+            return res.status(500).json({ message: "Groq API key is missing from environment variables. If you recently deployed, ensure the GROQ_API_KEY is added to your hosting provider's environment variables dashboard." });
+        }
+
+        const groqClient = getGroqClient();
+        if (!groqClient) {
+            return res.status(500).json({ message: "Groq API client failed to initialize despite API key being present." });
         }
 
         const { message, chatHistory } = req.body;
@@ -105,7 +113,7 @@ App Overview (If the user asks how this app works, use this info):
         // Add the current message
         messages.push({ role: "user", content: message });
 
-        const chatCompletion = await groq.chat.completions.create({
+        const chatCompletion = await groqClient.chat.completions.create({
             messages: messages,
             model: "llama-3.1-8b-instant", // Updated to the latest supported model
             temperature: 0.7,

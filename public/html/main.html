@@ -75,45 +75,45 @@ Track your goals, maintain consistency, and transform your lifestyle with an eas
             <div class="dashboard-card">
                 <div class="card-header">
                     <h3>Today's Progress</h3>
-                    <span class="date">March 15, 2024</span>
+                    <span class="date" id="hero-date">Today</span>
                 </div>
 
                 <div class="habit-item">
                     <div class="habit-info">
-                        <i class="fas fa-dumbbell"></i>
-                        <span>Morning Exercise</span>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Morning Meditation</span>
                     </div>
                     <div class="progress-container">
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: 90%"></div>
+                            <div class="progress-fill" style="width: 100%"></div>
                         </div>
-                        <span class="progress-text">90%</span>
-                    </div>
-                </div>
-
-                <div class="habit-item">
-                    <div class="habit-info">
-                        <i class="fas fa-book"></i>
-                        <span>Reading</span>
-                    </div>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 70%"></div>
-                        </div>
-                        <span class="progress-text">70%</span>
+                        <span class="progress-text">Done</span>
                     </div>
                 </div>
 
                 <div class="habit-item">
                     <div class="habit-info">
-                        <i class="fas fa-glass-water"></i>
-                        <span>Water Intake</span>
+                        <i class="fas fa-book-open"></i>
+                        <span>Log Daily Diary</span>
                     </div>
                     <div class="progress-container">
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: 85%"></div>
+                            <div class="progress-fill" style="width: 100%"></div>
                         </div>
-                        <span class="progress-text">85%</span>
+                        <span class="progress-text">Done</span>
+                    </div>
+                </div>
+
+                <div class="habit-item">
+                    <div class="habit-info">
+                        <i class="fas fa-brain"></i>
+                        <span>AI Coach Check-in</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 100%"></div>
+                        </div>
+                        <span class="progress-text">Done</span>
                     </div>
                 </div>
 
@@ -123,6 +123,9 @@ Track your goals, maintain consistency, and transform your lifestyle with an eas
                 </div>
             </div>
         </div>
+        <script>
+            document.getElementById('hero-date').textContent = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        </script>
     </section>
 
     <!-- Features Section -->
@@ -134,6 +137,14 @@ Track your goals, maintain consistency, and transform your lifestyle with an eas
             </div>
 
             <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Personal AI Coach</h3>
+                    <p>Get personalized advice, motivation, and actionable insights based on your daily progress and journaling.</p>
+                </div>
+
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-chart-line"></i>
@@ -371,7 +382,7 @@ Track your goals, maintain consistency, and transform your lifestyle with an eas
                     
                 </div>
                 <div class="about-image">
-                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop&crop=center" alt="Person tracking habits on a digital device" class="about-img">
+                    <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&h=400&fit=crop&crop=center" alt="Personal desk setup with notebook and coffee" class="about-img">
                 </div>
             </div>
         </div>

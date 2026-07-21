@@ -26,6 +26,11 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       const email = emailField.value.trim();
+      const submitBtn = forgotForm.querySelector('button[type="submit"]') || forgotForm.querySelector('button');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+      }
 
       try {
         const response = await fetch('/api/auth/forgot-password', {
@@ -40,6 +45,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!response.ok) {
           showMessage(data.message || 'Unable to send OTP.');
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Send Reset Link';
+          }
           return;
         }
 
@@ -52,6 +61,10 @@ document.addEventListener('DOMContentLoaded', function () {
       } catch (error) {
         showMessage('Network error. Please try again.');
         console.error(error);
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Send Reset Link';
+        }
       }
     });
   }
