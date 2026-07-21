@@ -45,7 +45,7 @@
     right: 0;
     width: 350px;
     height: 500px;
-    background: var(--bg-card, #ffffff);
+    background: var(--bg-main, #ffffff);
     border: 1px solid var(--border-color, #e2e8f0);
     border-radius: 20px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);

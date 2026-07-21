@@ -281,6 +281,7 @@
     }
     .filters-section .search-bar,
     .filters-section .filter-select {
+        display: flex; /* Override global display: none from home.css */
         width: 100%;
         margin-bottom: 10px;
     }

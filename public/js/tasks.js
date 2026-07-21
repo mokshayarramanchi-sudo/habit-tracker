@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const minDaysText = task.minDays ? `<span class="task-badge"><i class="fa-regular fa-calendar-check"></i> ${escapeHtml(task.minDays)}d/${task.frequency === 'Weekly' ? 'wk' : 'mo'}</span>` : '';
             
             const shortType = escapeHtml(task.type).split('-')[0].trim();
-            const shortFreq = escapeHtml(task.frequency).substring(0, 3).toUpperCase();
+            const freqText = escapeHtml(task.frequency);
             
             return `
                     <article class="task-item ${activeClass}" data-id="${escapeHtml(taskId)}">
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             </div>
                             <div class="task-meta">
                                 <span class="task-badge">${shortType}</span>
-                                <span class="task-badge">${shortFreq}</span>
+                                <span class="task-badge">${freqText}</span>
                                 ${timeText}
                                 ${minDaysText}
                             </div>
