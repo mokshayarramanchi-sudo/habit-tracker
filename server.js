@@ -41,7 +41,7 @@ app.use("/api/progress", dailyProgressRoutes);
 app.use("/api/diary", diaryRoutes);
 app.use("/api/future-plans", futurePlanRoutes);
 app.use("/api/analytics", analyticsRoutes);
-app.use("/api/notifications", notificationRoutes);
+app.use("/api/alerts", notificationRoutes);
 app.use("/api/chat", chatRoutes);
 
 const redirectIfAuthenticated = async (req, res, next) => {

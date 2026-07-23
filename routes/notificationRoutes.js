@@ -188,30 +188,4 @@ router.delete("/all", async (req, res) => {
     }
 });
 
-// Test push notification
-router.post("/test-push", async (req, res) => {
-    try {
-        const user = await User.findById(req.user.userId);
-        if (!user || !user.pushSubscriptions || user.pushSubscriptions.length === 0) {
-            return res.status(400).json({ message: "No push subscriptions found for this user." });
-        }
-        
-        const webPush = require("web-push");
-        const payload = JSON.stringify({ 
-            title: "Test Notification", 
-            body: "This is a test push notification from Habit Tracker!", 
-            url: "/home" 
-        });
-        
-        const promises = user.pushSubscriptions.map(sub => 
-            webPush.sendNotification(sub, payload).catch(err => console.error("Push Error on test:", err))
-        );
-        
-        await Promise.all(promises);
-        res.json({ message: "Test notification sent successfully!" });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
-
 module.exports = router;

@@ -90,7 +90,6 @@ const initializeSidebar = () => {
                 <div class="notification-header" style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid var(--border-color);">
                     <h4 style="margin: 0;">Notifications</h4>
                     <div style="display: flex; gap: 8px;">
-                        <button class="test-push-btn" id="testPushBtn" style="background: none; border: 1px solid var(--primary); color: var(--primary); border-radius: 4px; padding: 4px 8px; font-size: 0.8rem; cursor: pointer;">Test Push</button>
                         <button class="mark-read-btn" id="markReadBtn" style="background: none; border: none; color: var(--text-muted); font-size: 0.85rem; cursor: pointer; text-decoration: underline;">Mark read</button>
                     </div>
                 </div>
@@ -115,7 +114,7 @@ const initializeSidebar = () => {
                     
                     if (Notification.permission === 'granted') {
                         const token = localStorage.getItem('habitToken');
-                        const res = await fetch('/api/notifications/vapid-public-key', {
+                        const res = await fetch('/api/alerts/vapid-public-key', {
                             headers: { 'Authorization': `Bearer ${token}` }
                         });
                         const { publicKey } = await res.json();
@@ -136,7 +135,7 @@ const initializeSidebar = () => {
                             applicationServerKey: urlBase64ToUint8Array(publicKey)
                         });
 
-                        await fetch('/api/notifications/subscribe', {
+                        await fetch('/api/alerts/subscribe', {
                             method: 'POST',
                             body: JSON.stringify(subscription),
                             headers: {
@@ -191,7 +190,7 @@ const initializeSidebar = () => {
             if (!token) return;
 
             try {
-                const response = await fetch('/api/notifications', {
+                const response = await fetch('/api/alerts', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
@@ -270,7 +269,7 @@ const initializeSidebar = () => {
             const token = localStorage.getItem('habitToken');
             if (!token) return;
             try {
-                const res = await fetch('/api/notifications/mark-read', {
+                const res = await fetch('/api/alerts/mark-read', {
                     method: 'PUT',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -280,32 +279,6 @@ const initializeSidebar = () => {
                 }
             } catch (err) {}
         });
-
-        const testPushBtn = document.getElementById('testPushBtn');
-        if (testPushBtn) {
-            testPushBtn.addEventListener('click', async (e) => {
-                e.stopPropagation();
-                const token = localStorage.getItem('habitToken');
-                if (!token) return;
-                
-                // Also request permission again just in case it was dismissed
-                if ("Notification" in window && Notification.permission !== "granted") {
-                    await Notification.requestPermission();
-                }
-                
-                try {
-                    const res = await fetch('/api/notifications/test-push', {
-                        method: 'POST',
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-                    if (res.ok) {
-                        console.log('Test push sent to backend successfully');
-                    }
-                } catch (err) {
-                    console.error('Error sending test push:', err);
-                }
-            });
-        }
 
         document.addEventListener('click', (e) => {
             if (!notificationWrapper.contains(e.target)) {
