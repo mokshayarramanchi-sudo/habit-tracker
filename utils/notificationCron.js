@@ -152,27 +152,17 @@ const runNotificationChecks = async () => {
                 }
             }
 
-            // 3. Check for Future Tasks whose date and time is within 1 hour or exact time
+            // 3. Check for Future Tasks
             const plannedTasks = await FuturePlan.find({ userId, type: 'task' });
-
-            const isTimeForNotification = (taskTimeStr, currentTimeStr, offsetMins) => {
-                const [tH, tM] = taskTimeStr.split(':').map(Number);
-                const [cH, cM] = currentTimeStr.split(':').map(Number);
-                const taskMins = tH * 60 + tM;
-                let currentMins = cH * 60 + cM;
-
-                // Handle day wrap-around (if task is at 00:30 and current time is 23:30)
-                if (taskMins < 60 && currentMins > 1300) {
-                    currentMins -= 1440;
-                }
-
-                return currentMins === (taskMins - offsetMins); 
-            };
 
             for (const task of plannedTasks) {
                 if (task.date && task.time && task.date === todayStr) {
+                    const [tH, tM] = task.time.split(':').map(Number);
+                    const taskMins = tH * 60 + tM;
+                    const currentMins = hours * 60 + minutes;
+                    
                     // Check for 60 mins before
-                    if (isTimeForNotification(task.time, currentTime, 60)) {
+                    if (currentMins >= taskMins - 60 && currentMins < taskMins) {
                         const identifier = `task-due-${task._id}`;
                         const exists = await Notification.findOne({ userId, identifier });
                         if (!exists) {
@@ -189,7 +179,7 @@ const runNotificationChecks = async () => {
                     }
                     
                     // Check for exact time
-                    if (isTimeForNotification(task.time, currentTime, 0)) {
+                    if (currentMins >= taskMins) {
                         const identifier = `task-now-${task._id}`;
                         const exists = await Notification.findOne({ userId, identifier });
                         if (!exists) {
@@ -215,4 +205,4 @@ const runNotificationChecks = async () => {
 // Run every minute
 cron.schedule('* * * * *', runNotificationChecks);
 
-module.exports = { runNotificationChecks, getISTComponents };
+module.exports = { runNotificationChecks, getISTComponents, sendPushToUser };

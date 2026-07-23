@@ -37,7 +37,7 @@ router.post("/subscribe", async (req, res) => {
 router.get("/", async (req, res) => {
     try {
         const userId = req.user.userId;
-        const { getISTComponents } = require("../utils/notificationCron");
+        const { getISTComponents, sendPushToUser } = require("../utils/notificationCron");
         const { todayStr, currentTime, hours, now } = getISTComponents();
         
         // 1. Check for 10 PM missed progress
@@ -55,13 +55,14 @@ router.get("/", async (req, res) => {
                 const identifier = `10pm-${todayStr}`;
                 const exists = await Notification.findOne({ userId, identifier });
                 if (!exists) {
-                    await Notification.create({
+                    const notif = await Notification.create({
                         userId,
                         title: "Reminder",
                         message: "you are not entered today records enter it",
                         type: "reminder",
                         identifier
                     });
+                    await sendPushToUser(userId, { title: notif.title, body: notif.message, url: "/home" });
                 }
             }
 
@@ -75,13 +76,14 @@ router.get("/", async (req, res) => {
                 const identifier = `10pm-diary-${todayStr}`;
                 const exists = await Notification.findOne({ userId, identifier });
                 if (!exists) {
-                    await Notification.create({
+                    const notif = await Notification.create({
                         userId,
                         title: "Reminder",
                         message: "you are not entered today diary enter it",
                         type: "reminder",
                         identifier
                     });
+                    await sendPushToUser(userId, { title: notif.title, body: notif.message, url: "/diary" });
                 }
             }
         }
@@ -94,7 +96,7 @@ router.get("/", async (req, res) => {
                     const identifier = `habit-start-${habit._id}`;
                     const exists = await Notification.findOne({ userId, identifier });
                     if (!exists) {
-                        await Notification.create({
+                        const notif = await Notification.create({
                             userId,
                             title: "Habit Started",
                             message: `You should start this habit: ${habit.title} today!`,
@@ -102,6 +104,7 @@ router.get("/", async (req, res) => {
                             relatedId: habit._id,
                             identifier
                         });
+                        await sendPushToUser(userId, { title: notif.title, body: notif.message, url: "/future-plans" });
                     }
                 }
             }
@@ -124,7 +127,7 @@ router.get("/", async (req, res) => {
                     const identifier = `task-due-${task._id}`;
                     const exists = await Notification.findOne({ userId, identifier });
                     if (!exists) {
-                        await Notification.create({
+                        const notif = await Notification.create({
                             userId,
                             title: "Task Due Soon",
                             message: `Your planned task is due soon: ${task.title} at ${task.time}!`,
@@ -132,14 +135,15 @@ router.get("/", async (req, res) => {
                             relatedId: task._id,
                             identifier
                         });
+                        await sendPushToUser(userId, { title: notif.title, body: notif.message, url: "/future-plans" });
                     }
                 } else if (task.date === todayStr) {
                     // 60 mins before
-                    if (currentMins >= taskMins - 60) {
+                    if (currentMins >= taskMins - 60 && currentMins < taskMins) {
                         const identifier = `task-due-${task._id}`;
                         const exists = await Notification.findOne({ userId, identifier });
                         if (!exists) {
-                            await Notification.create({
+                            const notif = await Notification.create({
                                 userId,
                                 title: "Task Due Soon",
                                 message: `Your planned task is due soon: ${task.title} at ${task.time}!`,
@@ -147,6 +151,7 @@ router.get("/", async (req, res) => {
                                 relatedId: task._id,
                                 identifier
                             });
+                            await sendPushToUser(userId, { title: notif.title, body: notif.message, url: "/future-plans" });
                         }
                     }
                     // Exact time or past exact time today
@@ -154,7 +159,7 @@ router.get("/", async (req, res) => {
                         const identifier = `task-now-${task._id}`;
                         const exists = await Notification.findOne({ userId, identifier });
                         if (!exists) {
-                            await Notification.create({
+                            const notif = await Notification.create({
                                 userId,
                                 title: "Task Time",
                                 message: `You should start doing your task right now: ${task.title}!`,
@@ -162,6 +167,7 @@ router.get("/", async (req, res) => {
                                 relatedId: task._id,
                                 identifier
                             });
+                            await sendPushToUser(userId, { title: notif.title, body: notif.message, url: "/future-plans" });
                         }
                     }
                 }
