@@ -215,4 +215,4 @@ const runNotificationChecks = async () => {
 // Run every minute
 cron.schedule('* * * * *', runNotificationChecks);
 
-module.exports = { runNotificationChecks };
+module.exports = { runNotificationChecks, getISTComponents };

@@ -37,12 +37,11 @@ router.post("/subscribe", async (req, res) => {
 router.get("/", async (req, res) => {
     try {
         const userId = req.user.userId;
-        const now = new Date();
-        const todayStr = now.toISOString().split('T')[0];
-        const currentTime = now.toTimeString().substring(0, 5); // "HH:MM"
+        const { getISTComponents } = require("../utils/notificationCron");
+        const { todayStr, currentTime, hours, now } = getISTComponents();
         
         // 1. Check for 10 PM missed progress
-        if (now.getHours() >= 22) {
+        if (hours >= 22) {
             const Task = require("../models/Task");
             const tasks = await Task.find({ userId, active: { $ne: false } });
             let dailyTaskCount = 0;
@@ -87,39 +86,41 @@ router.get("/", async (req, res) => {
             }
         }
 
-        // 2. Check for Planned Habits starting today or earlier
-        const plannedHabits = await FuturePlan.find({ userId, type: 'habit' });
-        for (const habit of plannedHabits) {
-            if (habit.date && habit.date <= todayStr) {
-                const identifier = `habit-start-${habit._id}`;
-                const exists = await Notification.findOne({ userId, identifier });
-                if (!exists) {
-                    await Notification.create({
-                        userId,
-                        title: "Habit Started",
-                        message: `You should start this habit: ${habit.title} today!`,
-                        type: "habit",
-                        relatedId: habit._id,
-                        identifier
-                    });
+        // 2. Check for Planned Habits starting today or earlier (show after 9 AM)
+        if (hours >= 9) {
+            const plannedHabits = await FuturePlan.find({ userId, type: 'habit' });
+            for (const habit of plannedHabits) {
+                if (habit.date && habit.date <= todayStr) {
+                    const identifier = `habit-start-${habit._id}`;
+                    const exists = await Notification.findOne({ userId, identifier });
+                    if (!exists) {
+                        await Notification.create({
+                            userId,
+                            title: "Habit Started",
+                            message: `You should start this habit: ${habit.title} today!`,
+                            type: "habit",
+                            relatedId: habit._id,
+                            identifier
+                        });
+                    }
                 }
             }
         }
 
-        // 3. Check for Future Tasks whose date and time is within 1 hour
+        // 3. Check for Future Tasks
         const plannedTasks = await FuturePlan.find({ userId, type: 'task' });
         
-        const isTimeForNotification = (taskTimeStr, currentTimeStr) => {
-            const [tH, tM] = taskTimeStr.split(':').map(Number);
-            const [cH, cM] = currentTimeStr.split(':').map(Number);
-            const taskMins = tH * 60 + tM;
-            const currentMins = cH * 60 + cM;
-            return currentMins >= (taskMins - 60);
+        const getMins = (timeStr) => {
+            const [h, m] = timeStr.split(':').map(Number);
+            return h * 60 + m;
         };
 
         for (const task of plannedTasks) {
             if (task.date && task.time) {
-                if (task.date < todayStr || (task.date === todayStr && isTimeForNotification(task.time, currentTime))) {
+                const taskMins = getMins(task.time);
+                const currentMins = getMins(currentTime);
+                
+                if (task.date < todayStr) {
                     const identifier = `task-due-${task._id}`;
                     const exists = await Notification.findOne({ userId, identifier });
                     if (!exists) {
@@ -131,6 +132,37 @@ router.get("/", async (req, res) => {
                             relatedId: task._id,
                             identifier
                         });
+                    }
+                } else if (task.date === todayStr) {
+                    // 60 mins before
+                    if (currentMins >= taskMins - 60) {
+                        const identifier = `task-due-${task._id}`;
+                        const exists = await Notification.findOne({ userId, identifier });
+                        if (!exists) {
+                            await Notification.create({
+                                userId,
+                                title: "Task Due Soon",
+                                message: `Your planned task is due soon: ${task.title} at ${task.time}!`,
+                                type: "task",
+                                relatedId: task._id,
+                                identifier
+                            });
+                        }
+                    }
+                    // Exact time or past exact time today
+                    if (currentMins >= taskMins) {
+                        const identifier = `task-now-${task._id}`;
+                        const exists = await Notification.findOne({ userId, identifier });
+                        if (!exists) {
+                            await Notification.create({
+                                userId,
+                                title: "Task Time",
+                                message: `You should start doing your task right now: ${task.title}!`,
+                                type: "task",
+                                relatedId: task._id,
+                                identifier
+                            });
+                        }
                     }
                 }
             }
