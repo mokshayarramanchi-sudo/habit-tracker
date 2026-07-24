@@ -1,11 +1,19 @@
 self.addEventListener('push', function(event) {
-    const data = event.data ? event.data.json() : {};
+    let data = {};
+    if (event.data) {
+        try {
+            data = event.data.json();
+        } catch (e) {
+            data = { body: event.data.text() };
+        }
+    }
     const title = data.title || "Daily Habit Tracker";
     
     const options = {
         body: data.body || "You have a new notification.",
-        icon: '/images/logo.png', // Assuming you have a logo image
+        icon: '/images/logo.png',
         badge: '/images/logo.png',
+        vibrate: [100, 50, 100],
         data: {
             url: data.url || '/home'
         }
@@ -18,8 +26,20 @@ self.addEventListener('push', function(event) {
 
 self.addEventListener('notificationclick', function(event) {
     event.notification.close();
+    const targetUrl = event.notification.data ? event.notification.data.url : '/home';
+    
     event.waitUntil(
-        clients.openWindow(event.notification.data.url)
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
+            for (let i = 0; i < clientList.length; i++) {
+                const client = clientList[i];
+                if (client.url.includes(targetUrl) && 'focus' in client) {
+                    return client.focus();
+                }
+            }
+            if (clients.openWindow) {
+                return clients.openWindow(targetUrl);
+            }
+        })
     );
 });
 

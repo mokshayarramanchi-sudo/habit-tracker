@@ -113,62 +113,39 @@ router.get("/", async (req, res) => {
         // 3. Check for Future Tasks
         const plannedTasks = await FuturePlan.find({ userId, type: 'task' });
         
-        const getMins = (timeStr) => {
-            const [h, m] = timeStr.split(':').map(Number);
-            return h * 60 + m;
-        };
-
         for (const task of plannedTasks) {
             if (task.date && task.time) {
-                const taskMins = getMins(task.time);
-                const currentMins = getMins(currentTime);
+                const taskTimeMs = new Date(`${task.date}T${task.time}:00+05:30`).getTime();
+                if (isNaN(taskTimeMs)) continue;
                 
-                if (task.date < todayStr) {
+                const currentMs = now.getTime();
+                const diffMins = Math.floor((taskTimeMs - currentMs) / 60000);
+                
+                // 1 hour before window (between 0 and 60 minutes remaining)
+                if (diffMins <= 60 && diffMins > 0) {
                     const identifier = `task-due-${task._id}`;
                     const exists = await Notification.findOne({ userId, identifier });
                     if (!exists) {
                         const notif = await Notification.create({
-                            userId,
-                            title: "Task Due Soon",
+                            userId, title: "Task Due Soon",
                             message: `Your planned task is due soon: ${task.title} at ${task.time}!`,
-                            type: "task",
-                            relatedId: task._id,
-                            identifier
+                            type: "task", relatedId: task._id, identifier
                         });
                         await sendPushToUser(userId, { title: notif.title, body: notif.message, url: "/future-plans" });
                     }
-                } else if (task.date === todayStr) {
-                    // 60 mins before
-                    if (currentMins >= taskMins - 60 && currentMins < taskMins) {
-                        const identifier = `task-due-${task._id}`;
-                        const exists = await Notification.findOne({ userId, identifier });
-                        if (!exists) {
-                            const notif = await Notification.create({
-                                userId,
-                                title: "Task Due Soon",
-                                message: `Your planned task is due soon: ${task.title} at ${task.time}!`,
-                                type: "task",
-                                relatedId: task._id,
-                                identifier
-                            });
-                            await sendPushToUser(userId, { title: notif.title, body: notif.message, url: "/future-plans" });
-                        }
-                    }
-                    // Exact time or past exact time today
-                    if (currentMins >= taskMins) {
-                        const identifier = `task-now-${task._id}`;
-                        const exists = await Notification.findOne({ userId, identifier });
-                        if (!exists) {
-                            const notif = await Notification.create({
-                                userId,
-                                title: "Task Time",
-                                message: `You should start doing your task right now: ${task.title}!`,
-                                type: "task",
-                                relatedId: task._id,
-                                identifier
-                            });
-                            await sendPushToUser(userId, { title: notif.title, body: notif.message, url: "/future-plans" });
-                        }
+                }
+                
+                // Exact time or already past
+                if (diffMins <= 0) {
+                    const identifier = `task-now-${task._id}`;
+                    const exists = await Notification.findOne({ userId, identifier });
+                    if (!exists) {
+                        const notif = await Notification.create({
+                            userId, title: "Task Time",
+                            message: `You should start doing your task right now: ${task.title}!`,
+                            type: "task", relatedId: task._id, identifier
+                        });
+                        await sendPushToUser(userId, { title: notif.title, body: notif.message, url: "/future-plans" });
                     }
                 }
             }

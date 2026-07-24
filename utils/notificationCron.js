@@ -156,13 +156,15 @@ const runNotificationChecks = async () => {
             const plannedTasks = await FuturePlan.find({ userId, type: 'task' });
 
             for (const task of plannedTasks) {
-                if (task.date && task.time && task.date === todayStr) {
-                    const [tH, tM] = task.time.split(':').map(Number);
-                    const taskMins = tH * 60 + tM;
-                    const currentMins = hours * 60 + minutes;
+                if (task.date && task.time) {
+                    const taskTimeMs = new Date(`${task.date}T${task.time}:00+05:30`).getTime();
+                    if (isNaN(taskTimeMs)) continue;
+                    
+                    const currentMs = now.getTime();
+                    const diffMins = Math.floor((taskTimeMs - currentMs) / 60000);
                     
                     // Check for 60 mins before
-                    if (currentMins >= taskMins - 60 && currentMins < taskMins) {
+                    if (diffMins <= 60 && diffMins > 0) {
                         const identifier = `task-due-${task._id}`;
                         const exists = await Notification.findOne({ userId, identifier });
                         if (!exists) {
@@ -179,7 +181,7 @@ const runNotificationChecks = async () => {
                     }
                     
                     // Check for exact time
-                    if (currentMins >= taskMins) {
+                    if (diffMins <= 0) {
                         const identifier = `task-now-${task._id}`;
                         const exists = await Notification.findOne({ userId, identifier });
                         if (!exists) {

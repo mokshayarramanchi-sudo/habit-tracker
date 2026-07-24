@@ -130,10 +130,13 @@ const initializeSidebar = () => {
                             return outputArray;
                         };
 
-                        const subscription = await registration.pushManager.subscribe({
-                            userVisibleOnly: true,
-                            applicationServerKey: urlBase64ToUint8Array(publicKey)
-                        });
+                        let subscription = await registration.pushManager.getSubscription();
+                        if (!subscription) {
+                            subscription = await registration.pushManager.subscribe({
+                                userVisibleOnly: true,
+                                applicationServerKey: urlBase64ToUint8Array(publicKey)
+                            });
+                        }
 
                         await fetch('/api/alerts/subscribe', {
                             method: 'POST',

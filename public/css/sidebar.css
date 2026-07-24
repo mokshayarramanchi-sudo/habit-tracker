@@ -373,4 +373,17 @@
     .sidebar-footer {
         display: none;
     }
+
+    .notification-dropdown {
+        position: fixed;
+        bottom: 75px;
+        top: auto;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        width: 90vw;
+        max-width: 360px;
+        max-height: 70vh;
+        transform-origin: bottom center;
+    }
 }
