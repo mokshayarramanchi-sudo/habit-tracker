@@ -45,6 +45,10 @@ self.addEventListener('notificationclick', function(event) {
 
 // Required for Chrome to recognize the app as an installable PWA
 self.addEventListener('fetch', function(event) {
-    // Just pass the request through to the network
+    // Never intercept API requests or non-GET requests in service worker
+    if (event.request.url.includes('/api/') || event.request.method !== 'GET') {
+        return;
+    }
+    // Pass standard GET requests through to the network
     event.respondWith(fetch(event.request));
 });
