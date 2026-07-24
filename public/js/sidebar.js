@@ -261,6 +261,7 @@ const initializeSidebar = () => {
 
         const toggleDropdown = (e) => {
             if (e.target.id === 'markReadBtn') return;
+            e.preventDefault();
             e.stopPropagation();
             dropdown.classList.toggle('show');
             if (dropdown.classList.contains('show')) {
