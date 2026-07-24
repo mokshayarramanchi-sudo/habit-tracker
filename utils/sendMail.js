@@ -30,10 +30,12 @@ const sendMail = async (email, otp) => {
         const info = await transporter.sendMail(mailOptions);
 
         console.log("Email Sent:", info.response);
+        return info;
 
     } catch (error) {
 
-        console.log(error);
+        console.log("Error in sendMail:", error);
+        throw error;
 
     }
 };
