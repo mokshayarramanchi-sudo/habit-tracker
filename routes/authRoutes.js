@@ -20,7 +20,11 @@ router.post("/forgot-password", async (req, res) => {
     user.otpVerified = false;
 
     await user.save();
-    await sendMail(email, otp);
+    
+    // Dispatch email dispatch asynchronously so user gets instant response
+    sendMail(email, otp).catch(err => {
+      console.error("Background OTP send error:", err);
+    });
 
     res.json({ message: "OTP sent successfully" });
   } catch (error) {
