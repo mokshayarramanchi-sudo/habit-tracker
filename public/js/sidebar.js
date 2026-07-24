@@ -259,13 +259,16 @@ const initializeSidebar = () => {
             }
         };
 
-        notificationWrapper.addEventListener('click', (e) => {
+        const toggleDropdown = (e) => {
             if (e.target.id === 'markReadBtn') return;
+            e.stopPropagation();
             dropdown.classList.toggle('show');
             if (dropdown.classList.contains('show')) {
                 fetchNotifications();
             }
-        });
+        };
+
+        notificationWrapper.addEventListener('click', toggleDropdown);
 
         markReadBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
@@ -284,7 +287,7 @@ const initializeSidebar = () => {
         });
 
         document.addEventListener('click', (e) => {
-            if (!notificationWrapper.contains(e.target)) {
+            if (!notificationWrapper.contains(e.target) && !dropdown.contains(e.target)) {
                 dropdown.classList.remove('show');
             }
         });
