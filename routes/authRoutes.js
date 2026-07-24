@@ -17,6 +17,7 @@ router.post("/forgot-password", async (req, res) => {
 
     user.resetOTP = otp;
     user.otpExpire = Date.now() + 5 * 60 * 1000;
+    user.otpVerified = false;
 
     await user.save();
     await sendMail(email, otp);
@@ -41,6 +42,9 @@ router.post("/verify-otp", async (req, res) => {
       return res.status(400).json({ message: "Invalid or expired OTP" });
     }
 
+    user.otpVerified = true;
+    await user.save();
+
     res.json({ message: "OTP verified" });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -61,12 +65,17 @@ router.post("/reset-password", async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    if (!user.resetOTP || !user.otpVerified || user.otpExpire < Date.now()) {
+      return res.status(400).json({ message: "OTP verification required or session expired. Please request a new OTP." });
+    }
+
     const bcrypt = require("bcryptjs");
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     user.password = hashedPassword;
     user.resetOTP = undefined;
     user.otpExpire = undefined;
+    user.otpVerified = false;
 
     await user.save();
 

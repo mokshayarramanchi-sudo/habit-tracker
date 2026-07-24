@@ -260,7 +260,7 @@ const initializeSidebar = () => {
         };
 
         const toggleDropdown = (e) => {
-            if (e.target.id === 'markReadBtn') return;
+            if (dropdown.contains(e.target)) return;
             e.preventDefault();
             e.stopPropagation();
             dropdown.classList.toggle('show');

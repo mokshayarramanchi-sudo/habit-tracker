@@ -45,6 +45,11 @@ const UserSchema = new mongoose.Schema({
         type: Date
     },
 
+    otpVerified: {
+        type: Boolean,
+        default: false
+    },
+
     sessions: [{
         token: String,
         device: String,

@@ -68,27 +68,29 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Theme Toggle Logic
     const themeToggleBtn = document.getElementById('theme-toggle');
-    const themeIcon = themeToggleBtn.querySelector('i');
-    
-    // Check for saved theme or default to light
-    const currentTheme = localStorage.getItem('theme') || 'light';
-    if (currentTheme === 'dark') {
-        document.body.setAttribute('data-theme', 'dark');
-        themeIcon.classList.replace('fa-moon', 'fa-sun');
-    }
-
-    themeToggleBtn.addEventListener('click', () => {
-        const isDark = document.body.hasAttribute('data-theme');
-        if (isDark) {
-            document.body.removeAttribute('data-theme');
-            localStorage.setItem('theme', 'light');
-            themeIcon.classList.replace('fa-sun', 'fa-moon');
-        } else {
+    if (themeToggleBtn) {
+        const themeIcon = themeToggleBtn.querySelector('i');
+        
+        // Check for saved theme or default to light
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        if (currentTheme === 'dark') {
             document.body.setAttribute('data-theme', 'dark');
-            localStorage.setItem('theme', 'dark');
-            themeIcon.classList.replace('fa-moon', 'fa-sun');
+            if (themeIcon) themeIcon.classList.replace('fa-moon', 'fa-sun');
         }
-    });
+
+        themeToggleBtn.addEventListener('click', () => {
+            const isDark = document.body.hasAttribute('data-theme');
+            if (isDark) {
+                document.body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                if (themeIcon) themeIcon.classList.replace('fa-sun', 'fa-moon');
+            } else {
+                document.body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                if (themeIcon) themeIcon.classList.replace('fa-moon', 'fa-sun');
+            }
+        });
+    }
 
     // Habit Overview Logic
     const doTasksGrid = document.getElementById('doTasksGrid');
@@ -334,12 +336,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
 // Number Counter Animation
-    const counters = document.querySelectorAll('.stat-value');
+    const counters = document.querySelectorAll('.stat-value[data-target]');
     const speed = 200; // lower is faster
 
     const animateCounters = () => {
         counters.forEach(counter => {
-            const target = +counter.getAttribute('data-target');
+            const rawTarget = counter.getAttribute('data-target');
+            if (!rawTarget) return;
+            const target = +rawTarget;
             const count = +counter.innerText;
             const increment = target / speed;
 
